@@ -2,24 +2,11 @@
   "name": "Aula Preescolar - Planificador Docente",
   "short_name": "AulaPreescolar",
   "description": "Planificador de actividades y asistencia para docentes de preescolar",
-  "start_url": "/aula-preescolar/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f5f7fa",
-  "theme_color": "#E91E63",
+  "background_color": "#FFF3E0",
+  "theme_color": "#FF6B9D",
   "orientation": "portrait",
-  "icons": [
-    {
-      "src": "img.png",
-      "sizes": "192x192",
-      "type": "img/png"
-    },
-    {
-      "src": "img.png",
-      "sizes": "512x512",
-      "type": "img/png"
-    }
-  ],
   "categories": ["education", "productivity"],
   "lang": "es-MX"
 }
-
