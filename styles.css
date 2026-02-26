@@ -388,3 +388,31 @@ input:focus, select:focus, textarea:focus {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
 }
+/* ─────────────────────────────────────────────────────────────────────
+   CORRECCIÓN DE CONTRASTE - NOMBRE DE MAESTRA
+   ───────────────────────────────────────────────────────────────────── */
+
+/* Info de la maestra en home - MEJOR CONTRASTE */
+.maestra-info {
+    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%) !important;
+    color: white !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+#maestra-nombre {
+    color: white !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+    font-weight: 700 !important;
+}
+
+#maestra-grupo {
+    color: #FFF3E0 !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+    font-weight: 600 !important;
+}
+
+/* Stats numbers - más visibles */
+.stat-number {
+    color: #C44569 !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
