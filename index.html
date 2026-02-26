@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#E91E63">
+    <title>Aula Preescolar - Planificador Docente</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <style>
+        .logo { width: 60px; height: 60px; border-radius: 10px; background: white; padding: 5px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <span style="font-size: 40px;">🎓</span>
+            <div>
+                <h1>Aula Preescolar</h1>
+                <p>Planificador Docente - Fase 1</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- PANTALLA DE INICIO -->
+        <section id="home-screen" class="screen active">
+            <div class="card">
+                <div class="maestra-info" style="background: linear-gradient(135deg, #E91E63, #F06292); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                    <h2 id="maestra-nombre">👋 ¡Hola, Maestra!</h2>
+                    <p id="maestra-grupo" style="margin: 5px 0 0 0; opacity: 0.9;">Grupo: Sin configurar</p>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number" id="stat-alumnos">0</span>
+                        <span class="stat-label">Alumnos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="stat-actividades">0</span>
+                        <span class="stat-label">Actividades</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="stat-planificaciones">0</span>
+                        <span class="stat-label">Planes</span>
+                    </div>
+                </div>
+
+                <div class="button-grid">
+                    <button class="btn btn-primary" onclick="app.mostrarPantalla('planificar-screen')">
+                        📝 Planificar
+                    </button>
+                    <button class="btn btn-success" onclick="app.mostrarPantalla('asistencia-screen')">
+                        📅 Asistencia
+                    </button>
+                    <button class="btn btn-info" onclick="app.mostrarPantalla('actividades-screen')">
+                        🎨 Actividades
+                    </button>
+                    <button class="btn btn-warning" onclick="app.mostrarPantalla('alumnos-screen')">
+                        👶 Alumnos
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('recursos-screen')">
+                        📥 Recursos
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('datos-screen')">
+                        💾 Exportar/Importar
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('ajustes-screen')">
+                        ⚙️ Ajustes
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('ayuda-screen')">
+                        ❓ Ayuda
+                    </button>
+                </div>
+
+                <!-- Banner de instalación PWA -->
+                <div id="pwa-install-banner" style="display: none; margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #4CAF50, #8BC34A); color: white; border-radius: 10px; text-align: center;">
+                    <p style="margin: 0 0 10px 0; font-weight: bold;">📱 ¡Instala la App!</p>
+                    <p style="margin: 0 0 15px 0; font-size: 13px;">Acceso rápido desde tu pantalla de inicio</p>
+                    <button class="btn" style="background: white; color: #4CAF50;" onclick="app.instalarPWA()">✅ Instalar Ahora</button>
+                    <button class="btn" style="background: transparent; color: white; border: 1px solid white; margin-top: 10px;" onclick="document.getElementById('pwa-install-banner').style.display='none'">❌ Después</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLANIFICAR -->
+        <section id="planificar-screen" class="screen">
+            <div class="card">
+                <h2>📝 Planificación Semanal</h2>
+                
+                <div class="form-group">
+                    <label>Semana:</label>
+                    <input type="week" id="plan-semana" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Campo Formativo:</label>
+                    <select id="plan-campo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="">Seleccionar...</option>
+                        <option value="lenguaje">Lenguaje y Comunicación</option>
+                        <option value="pensamiento">Pensamiento Matemático</option>
+                        <option value="exploracion">Exploración del Mundo</option>
+                        <option value="arte">Expresión Artística</option>
+                        <option value="socioemocional">Desarrollo Socioemocional</option>
+                        <option value="fisico">Desarrollo Físico y Salud</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Actividad:</label>
+                    <textarea id="plan-actividad" placeholder="Describe la actividad..." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 100px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Materiales:</label>
+                    <input type="text" id="plan-materiales" placeholder="Ej: Hojas, crayolas, tijeras..." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Tiempo Estimado:</label>
+                    <select id="plan-tiempo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="15">15 minutos</option>
+                        <option value="30">30 minutos</option>
+                        <option value="45">45 minutos</option>
+                        <option value="60">1 hora</option>
+                        <option value="90">1.5 horas</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="app.guardarPlanificacion()">💾 Guardar Plan</button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+
+                <div id="planes-guardados" style="margin-top: 20px;"></div>
+            </div>
+        </section>
+
+        <!-- ASISTENCIA -->
+        <section id="asistencia-screen" class="screen">
+            <div class="card">
+                <h2>📅 Registro de Asistencia</h2>
+                
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" id="asistencia-fecha" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div id="lista-asistencia" style="margin: 20px 0;"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="app.guardarAsistencia()">💾 Guardar Asistencia</button>
+                    <button class="btn btn-success" onclick="app.exportarAsistenciaExcel()">📊 Exportar Excel</button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVIDADES -->
+        <section id="actividades-screen" class="screen">
+            <div class="card">
+                <h2>🎨 Banco de Actividades</h2>
+                
+                <div class="form-group">
+                    <label>Filtrar por Campo:</label>
+                    <select id="actividades-filtro" onchange="app.filtrarActividades()" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="todos">Todas</option>
+                        <option value="lenguaje">Lenguaje y Comunicación</option>
+                        <option value="pensamiento">Pensamiento Matemático</option>
+                        <option value="exploracion">Exploración del Mundo</option>
+                        <option value="arte">Expresión Artística</option>
+                        <option value="socioemocional">Desarrollo Socioemocional</option>
+                        <option value="fisico">Desarrollo Físico y Salud</option>
+                    </select>
+                </div>
+
+                <div id="lista-actividades" style="margin: 20px 0;"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ALUMNOS -->
+        <section id="alumnos-screen" class="screen">
+            <div class="card">
+                <h2>👶 Lista de Alumnos</h2>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                    ⚠️ Solo guarda nombre de pila e inicial del apellido (sin datos sensibles)
+                </p>
+
+                <div class="form-group">
+                    <label>Nombre del Alumno:</label>
+                    <input type="text" id="alumno-nombre" placeholder="Ej: Juan P." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="app.agregarAlumno()">➕ Agregar</button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+
+                <div id="lista-alumnos" style="margin-top: 20px;"></div>
+            </div>
+        </section>
+
+        <!-- RECURSOS -->
+        <section id="recursos-screen" class="screen">
+            <div class="card">
+                <h2>📥 Recursos Descargables</h2>
+
+                <div class="recursos-grid" id="lista-recursos" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPORTAR/IMPORTAR -->
+        <section id="datos-screen" class="screen">
+            <div class="card">
+                <h2>💾 Respaldo de Datos</h2>
+                
+                <div style="background: #E3F2FD; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #1565C0; margin: 0 0 10px 0;">📤 Exportar Datos</h3>
+                    <p style="color: #666; margin: 0 0 15px 0;">Descarga un archivo de respaldo con toda tu información</p>
+                    <button class="btn btn-primary" onclick="app.exportarDatos()">📥 Descargar Respaldo (JSON)</button>
+                    <button class="btn btn-success" onclick="app.exportarTodoExcel()">📊 Exportar Todo a Excel</button>
+                </div>
+
+                <div style="background: #FFF3E0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #E65100; margin: 0 0 10px 0;">📥 Importar Datos</h3>
+                    <p style="color: #666; margin: 0 0 15px 0;">Restaura tus datos desde un archivo de respaldo</p>
+                    <button class="btn btn-warning" onclick="app.importarDatos()">📂 Seleccionar Archivo</button>
+                </div>
+
+                <div style="background: #FFEBEE; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <p style="color: #C62828; margin: 0; font-size: 13px;">
+                        ⚠️ <strong>Importante:</strong> Exporta tus datos regularmente y guárdalos en un lugar seguro (Google Drive, USB, etc.). Si limpias el cache del navegador, perderás tus datos si no tienes respaldo.
+                    </p>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- AJUSTES -->
+        <section id="ajustes-screen" class="screen">
+            <div class="card">
+                <h2>⚙️ Ajustes</h2>
+
+                <div class="form-group">
+                    <label>Nombre de la Maestra:</label>
+                    <input type="text" id="ajuste-nombre" placeholder="Tu nombre" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Grupo:</label>
+                    <select id="ajuste-grupo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="3">3 años</option>
+                        <option value="4">4 años</option>
+                        <option value="5">5 años</option>
+                        <option value="mixto">Grupo Mixto</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Ciclo Escolar:</label>
+                    <input type="text" id="ajuste-ciclo" placeholder="Ej: 2026-2027" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="app.guardarAjustes()">💾 Guardar</button>
+                    <button class="btn btn-danger" onclick="app.borrarTodo()">🗑️ Borrar Todo</button>
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- AYUDA -->
+        <section id="ayuda-screen" class="screen">
+            <div class="card">
+                <h2>❓ Ayuda</h2>
+
+                <div style="background: #E8F5E9; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #2E7D32; margin: 0 0 10px 0;">📱 ¿Cómo instalar la app?</h3>
+                    <ol style="color: #555; line-height: 1.8;">
+                        <li><strong>Android:</strong> Chrome → 3 puntos → "Agregar a pantalla principal"</li>
+                        <li><strong>iPhone:</strong> Safari → Compartir → "Agregar al inicio"</li>
+                        <li><strong>PC:</strong> Chrome → 3 puntos → "Instalar"</li>
+                    </ol>
+                </div>
+
+                <div style="background: #E3F2FD; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #1565C0; margin: 0 0 10px 0;">💾 ¿Cómo hacer respaldo?</h3>
+                    <ol style="color: #555; line-height: 1.8;">
+                        <li>Ve a "Exportar/Importar"</li>
+                        <li>Click en "Descargar Respaldo"</li>
+                        <li>Guarda el archivo en Google Drive, USB o email</li>
+                        <li>Exporta al menos una vez por semana</li>
+                    </ol>
+                </div>
+
+                <div style="background: #FFF3E0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3 style="color: #E65100; margin: 0 0 10px 0;">⚠️ Datos Sensibles</h3>
+                    <p style="color: #666; line-height: 1.8;">
+                        Esta app NO guarda datos sensibles de menores. Solo usa nombres de pila e inicial de apellido. 
+                        No guarda CURP, fechas de nacimiento completas, direcciones, fotografías ni datos de contacto de padres.
+                    </p>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="app.mostrarPantalla('home-screen')">↩️ Volver</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Aula Preescolar - Fase 1</p>
+        <p style="margin-top: 10px; font-size: 12px; color: #999;">
+            Los datos se guardan localmente en tu dispositivo. Exporta regularmente.
+        </p>
+    </footer>
+
+    <script src="data/actividades.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('✅ SW registrado:', reg.scope))
+                .catch(err => console.log('⚠️ SW (no crítico):', err.message));
+        }
+    </script>
+</body>
+</html>
