@@ -1,5 +1,6 @@
 /* ─────────────────────────────────────────────────────────────────────
-   AULA PREESCOLAR - ESTILOS
+   AULA PREESCOLAR - ESTILOS TEMÁTICOS
+   Colores: Rosa, Lila, Turquesa, Amarillo (temática infantil)
    ───────────────────────────────────────────────────────────────────── */
 
 * {
@@ -9,17 +10,39 @@
 }
 
 body {
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Comic Sans MS', 'Segoe UI', 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #FFECF3 0%, #E8F5E9 50%, #FFF3E0 100%);
     min-height: 100vh;
-    color: #333;
+    color: #5D4037;
 }
 
+/* HEADER CON ARCOÍRIS */
 .header {
-    background: linear-gradient(135deg, #E91E63, #F06292);
+    background: linear-gradient(135deg, #FF6B9D 0%, #C44569 50%, #FF6B9D 100%);
     color: white;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+    padding: 25px 20px;
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+    border-radius: 0 0 30px 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '🌈';
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 40px;
+    opacity: 0.3;
+}
+
+.header::after {
+    content: '✏️';
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    font-size: 40px;
+    opacity: 0.3;
 }
 
 .header-content {
@@ -28,237 +51,286 @@ body {
     gap: 15px;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 .header h1 {
-    font-size: 24px;
+    font-size: 28px;
     margin: 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 
 .header p {
     font-size: 14px;
-    opacity: 0.9;
+    opacity: 0.95;
     margin: 5px 0 0 0;
 }
 
+/* CONTENEDOR PRINCIPAL */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 25px 20px;
 }
 
+/* PANTALLAS */
 .screen {
     display: none;
 }
 
 .screen.active {
     display: block;
+    animation: fadeIn 0.3s ease;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* TARJETAS CON BORDES REDONDEADOS */
 .card {
     background: white;
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    margin-bottom: 25px;
+    border: 3px solid #FFD6E7;
 }
 
 .card h2 {
-    color: #1a237e;
-    margin: 0 0 20px 0;
-    font-size: 22px;
+    color: #C44569;
+    margin: 0 0 25px 0;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
+/* ESTADÍSTICAS CON COLORES */
 .stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
 .stat {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 20px;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #FFECF3 0%, #FFE0E9 100%);
+    padding: 25px;
+    border-radius: 20px;
     text-align: center;
-    border: 1px solid #e0e0e0;
+    border: 2px solid #FFD6E7;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
 }
 
 .stat-number {
     display: block;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
-    color: #E91E63;
+    color: #FF6B9D;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .stat-label {
-    font-size: 12px;
-    color: #666;
-    font-weight: 500;
+    font-size: 13px;
+    color: #8D6E63;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
+/* GRID DE BOTONES TEMÁTICOS */
 .button-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin: 20px 0;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin: 25px 0;
 }
 
 .button-group {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
+/* BOTONES CON COLORES Y GRADIENTES */
 .btn {
-    padding: 14px 28px;
+    padding: 16px 30px;
     border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 14px;
+    border-radius: 15px;
+    font-weight: 700;
+    font-size: 15px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.3s;
+    font-family: inherit;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.btn:active {
+    transform: translateY(-1px);
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #E91E63, #F06292);
+    background: linear-gradient(135deg, #FF6B9D 0%, #FF8EAB 100%);
     color: white;
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #4CAF50, #8BC34A);
+    background: linear-gradient(135deg, #6BCB77 0%, #8ED98F 100%);
     color: white;
 }
 
 .btn-info {
-    background: linear-gradient(135deg, #2196F3, #64B5F6);
+    background: linear-gradient(135deg, #4ECDC4 0%, #6ED9D1 100%);
     color: white;
 }
 
 .btn-warning {
-    background: linear-gradient(135deg, #FF9800, #FFB74D);
-    color: #1a1a1a;
+    background: linear-gradient(135deg, #FFD93D 0%, #FFE566 100%);
+    color: #5D4037;
 }
 
 .btn-secondary {
-    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
-    color: #333;
-    border: 2px solid #ddd;
+    background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+    color: #5D4037;
+    border: 2px solid #DEE2E6;
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #f44336, #ef5350);
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8787 100%);
     color: white;
 }
 
+/* FORMULARIOS */
 .form-group {
-    margin: 15px 0;
+    margin: 20px 0;
 }
 
 .form-group label {
     display: block;
-    margin: 0 0 8px 0;
-    font-weight: 600;
-    color: #555;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    color: #C44569;
+    font-size: 15px;
 }
 
 input, select, textarea {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
+    padding: 14px 18px;
+    border: 2px solid #FFD6E7;
+    border-radius: 12px;
     font-size: 16px;
     font-family: inherit;
+    background: #FFFAFC;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #E91E63;
+    border-color: #FF6B9D;
+    box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2);
 }
 
-.footer {
-    text-align: center;
-    padding: 25px;
-    color: #666;
-    font-size: 14px;
-    border-top: 2px solid #e0e0e0;
-    background: white;
-    margin-top: 30px;
-}
-
-/* Lista de Alumnos */
-.alumno-item {
+/* LISTAS DE ALUMNOS Y ASISTENCIA */
+.alumno-item, .asistencia-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    background: #f5f5f5;
-    border-radius: 8px;
-    margin: 10px 0;
+    padding: 18px;
+    background: linear-gradient(135deg, #FFF9FB 0%, #FFF3E7 100%);
+    border-radius: 15px;
+    margin: 12px 0;
+    border: 2px solid #FFE0E9;
+    transition: transform 0.2s;
+}
+
+.alumno-item:hover, .asistencia-item:hover {
+    transform: translateX(5px);
 }
 
 .alumno-item button {
-    background: #f44336;
+    background: #FF6B6B;
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* Lista de Asistencia */
-.asistencia-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: #f5f5f5;
-    border-radius: 8px;
-    margin: 10px 0;
-}
-
-.asistencia-item select {
-    width: 150px;
-    padding: 8px;
-}
-
-/* Actividades */
-.actividad-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 20px;
+    padding: 10px 18px;
     border-radius: 10px;
-    margin: 15px 0;
-    border-left: 4px solid #E91E63;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.alumno-item button:hover {
+    background: #FF5252;
+}
+
+/* ACTIVIDADES Y PLANES */
+.actividad-card {
+    background: linear-gradient(135deg, #FFF9FB 0%, #F3E5F5 100%);
+    padding: 25px;
+    border-radius: 18px;
+    margin: 20px 0;
+    border-left: 5px solid #FF6B9D;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 
 .actividad-card h4 {
-    color: #1a237e;
-    margin: 0 0 10px 0;
+    color: #8E24AA;
+    margin: 0 0 12px 0;
+    font-size: 18px;
 }
 
 .actividad-card p {
-    color: #666;
-    line-height: 1.6;
-    margin: 5px 0;
+    color: #6D4C41;
+    line-height: 1.7;
+    margin: 8px 0;
 }
 
 .actividad-tag {
     display: inline-block;
-    background: #E91E63;
+    background: linear-gradient(135deg, #FF6B9D 0%, #FF8EAB 100%);
     color: white;
-    padding: 4px 12px;
+    padding: 6px 16px;
     border-radius: 20px;
     font-size: 12px;
-    margin: 5px 5px 5px 0;
+    font-weight: 700;
+    margin: 5px 8px 5px 0;
+    box-shadow: 0 2px 8px rgba(255, 107, 157, 0.3);
 }
 
-/* Responsive */
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 30px;
+    color: #8D6E63;
+    font-size: 14px;
+    border-top: 3px solid #FFD6E7;
+    background: white;
+    margin-top: 30px;
+    border-radius: 25px 25px 0 0;
+}
+
+/* BANNER PWA */
+#pwa-install-banner {
+    background: linear-gradient(135deg, #6BCB77 0%, #8ED98F 100%) !important;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .stats {
         grid-template-columns: 1fr;
@@ -272,9 +344,17 @@ input:focus, select:focus, textarea:focus {
         flex-direction: column;
         text-align: center;
     }
+
+    .header::before, .header::after {
+        display: none;
+    }
+
+    .card {
+        padding: 20px;
+    }
 }
 
-/* Print styles */
+/* PRINT STYLES */
 @media print {
     body * {
         visibility: hidden;
@@ -290,9 +370,21 @@ input:focus, select:focus, textarea:focus {
         top: 0;
         width: 100%;
         box-shadow: none;
+        border: none;
     }
 
     .btn, .button-group, .header, .footer {
         display: none !important;
     }
+}
+
+/* DECORACIONES INFANTILES */
+.decoracion {
+    font-size: 24px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }
