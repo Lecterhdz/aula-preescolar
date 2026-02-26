@@ -3,7 +3,6 @@
 // ─────────────────────────────────────────────────────────────────────
 
 const app = {
-    // Estado
     datos: {
         maestra: { nombre: '', grupo: '', ciclo: '' },
         alumnos: [],
@@ -14,9 +13,6 @@ const app = {
     },
     deferredPrompt: null,
 
-    // ─────────────────────────────────────────────────────────────────────
-    // INICIALIZACIÓN
-    // ─────────────────────────────────────────────────────────────────────
     init: function() {
         console.log('Aula Preescolar iniciado');
         this.cargarDatos();
@@ -24,7 +20,6 @@ const app = {
         this.initPWAInstall();
         this.mostrarPantalla('home-screen');
         
-        // Establecer fecha de hoy para asistencia
         var fechaInput = document.getElementById('asistencia-fecha');
         if (fechaInput) {
             fechaInput.valueAsDate = new Date();
@@ -41,7 +36,6 @@ const app = {
             window.scrollTo(0, 0);
         }
         
-        // Cargar datos específicos de cada pantalla
         if (id === 'alumnos-screen') this.renderAlumnos();
         if (id === 'asistencia-screen') this.renderAsistencia();
         if (id === 'actividades-screen') this.filtrarActividades();
@@ -51,7 +45,6 @@ const app = {
     },
 
     actualizarUI: function() {
-        // Actualizar información de maestra
         var nombreEl = document.getElementById('maestra-nombre');
         var grupoEl = document.getElementById('maestra-grupo');
         if (nombreEl && this.datos.maestra.nombre) {
@@ -61,15 +54,11 @@ const app = {
             grupoEl.textContent = 'Grupo: ' + this.datos.maestra.grupo + ' años | ' + (this.datos.maestra.ciclo || '2026-2027');
         }
 
-        // Actualizar estadísticas
         document.getElementById('stat-alumnos').textContent = this.datos.alumnos.length;
         document.getElementById('stat-actividades').textContent = typeof ACTIVIDADES_PRECARGADAS !== 'undefined' ? ACTIVIDADES_PRECARGADAS.length : 0;
         document.getElementById('stat-planificaciones').textContent = this.datos.planificaciones.length;
     },
 
-    // ─────────────────────────────────────────────────────────────────────
-    // GESTIÓN DE DATOS (localStorage)
-    // ─────────────────────────────────────────────────────────────────────
     cargarDatos: function() {
         try {
             var s = localStorage.getItem('aulaPreescolar_data');
@@ -86,21 +75,12 @@ const app = {
         this.actualizarUI();
     },
 
-    // ─────────────────────────────────────────────────────────────────────
-    // ALUMNOS
-    // ─────────────────────────────────────────────────────────────────────
     agregarAlumno: function() {
         var input = document.getElementById('alumno-nombre');
         var nombre = input ? input.value.trim() : '';
         
         if (!nombre) {
             alert('⚠️ Ingresa un nombre');
-            return;
-        }
-
-        // Validar: solo nombre de pila + inicial (sin datos sensibles)
-        if (nombre.length > 30) {
-            alert('⚠️ Nombre muy largo. Usa solo nombre de pila e inicial de apellido (Ej: Juan P.)');
             return;
         }
 
@@ -143,9 +123,6 @@ const app = {
         }).join('');
     },
 
-    // ─────────────────────────────────────────────────────────────────────
-    // ASISTENCIA
-    // ─────────────────────────────────────────────────────────────────────
     renderAsistencia: function() {
         var container = document.getElementById('lista-asistencia');
         if (!container) return;
@@ -185,10 +162,7 @@ const app = {
             });
         });
 
-        // Eliminar registros previos de esta fecha
         this.datos.asistencia = this.datos.asistencia.filter(function(r) { return r.fecha !== fecha; });
-        
-        // Agregar nuevos registros
         this.datos.asistencia = this.datos.asistencia.concat(registros);
         this.guardarDatos();
         
@@ -201,14 +175,12 @@ const app = {
             return;
         }
 
-        // Crear CSV
         var csv = 'Fecha,Alumno,Estado\n';
         this.datos.asistencia.forEach(function(r) {
             var alumno = app.datos.alumnos.find(function(a) { return a.id === r.alumnoId; });
             csv += r.fecha + ',' + (alumno ? alumno.nombre : 'N/A') + ',' + r.estado + '\n';
         });
 
-        // Descargar
         var blob = new Blob([csv], { type: 'text/csv' });
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
@@ -218,9 +190,6 @@ const app = {
         URL.revokeObjectURL(url);
     },
 
-    // ─────────────────────────────────────────────────────────────────────
-    // ACTIVIDADES
-    // ─────────────────────────────────────────────────────────────────────
     filtrarActividades: function() {
         var container = document.getElementById('lista-actividades');
         if (!container) return;
@@ -244,7 +213,7 @@ const app = {
                 '<p><strong>Descripción:</strong> ' + act.descripcion + '</p>' +
                 '<p><strong>Materiales:</strong> ' + act.materiales + '</p>' +
                 '<p><strong>Tiempo:</strong> ' + act.tiempo + ' min | <strong>Edad:</strong> ' + act.edad + '</p>' +
-                '<button class="btn btn-primary" onclick="app.usarActividad(\'' + act.id + '\')" style="margin-top:10px;">📝 Usar en Planificación</button>' +
+                '<button class="btn btn-primary" onclick="app.usarActividad(' + act.id + ')" style="margin-top:10px;">📝 Usar en Planificación</button>' +
                 '</div>';
         }).join('');
     },
@@ -262,9 +231,6 @@ const app = {
         alert('✅ Actividad cargada en planificación');
     },
 
-    // ─────────────────────────────────────────────────────────────────────
-    // PLANIFICACIONES
-    // ─────────────────────────────────────────────────────────────────────
     guardarPlanificacion: function() {
         var semana = document.getElementById('plan-semana').value;
         var campo = document.getElementById('plan-campo').value;
@@ -290,7 +256,6 @@ const app = {
         this.datos.planificaciones.push(plan);
         this.guardarDatos();
         
-        // Limpiar formulario
         document.getElementById('plan-actividad').value = '';
         document.getElementById('plan-materiales').value = '';
         
@@ -327,20 +292,14 @@ const app = {
         }
     },
 
-    // ─────────────────────────────────────────────────────────────────────
-    // RECURSOS
-    // ─────────────────────────────────────────────────────────────────────
     renderRecursos: function() {
         var container = document.getElementById('lista-recursos');
         if (!container) return;
 
         var recursos = [
-            { nombre: 'Lista de Asistencia (PDF)', tipo: 'PDF', descargar: 'asistencia_template.pdf' },
-            { nombre: 'Planificación Semanal (PDF)', tipo: 'PDF', descargar: 'planificacion_template.pdf' },
-            { nombre: 'Calendario Escolar', tipo: 'PDF', descargar: 'calendario.pdf' },
-            { nombre: 'Registro de Incidentes', tipo: 'PDF', descargar: 'incidentes.pdf' },
-            { nombre: 'Carteles de Colores', tipo: 'PDF', descargar: 'colores.pdf' },
-            { nombre: 'Carteles de Números', tipo: 'PDF', descargar: 'numeros.pdf' }
+            { nombre: 'Lista de Asistencia (PDF)', tipo: 'PDF' },
+            { nombre: 'Planificación Semanal (PDF)', tipo: 'PDF' },
+            { nombre: 'Calendario Escolar', tipo: 'PDF' }
         ];
 
         container.innerHTML = recursos.map(function(rec) {
@@ -353,13 +312,9 @@ const app = {
     },
 
     descargarRecurso: function(nombre) {
-        // Simular descarga (en producción serían archivos reales)
-        alert('ℹ️ En producción, esto descargaría: ' + nombre + '\n\nPuedes crear estos PDFs y ponerlos en la carpeta /recursos/');
+        alert('ℹ️ En producción, esto descargaría: ' + nombre);
     },
 
-    // ─────────────────────────────────────────────────────────────────────
-    // EXPORTAR / IMPORTAR DATOS
-    // ─────────────────────────────────────────────────────────────────────
     exportarDatos: function() {
         var fecha = new Date().toISOString().split('T')[0];
         var blob = new Blob([JSON.stringify(this.datos, null, 2)], { type: 'application/json' });
@@ -372,11 +327,85 @@ const app = {
         alert('✅ Respaldo descargado. Guárdalo en un lugar seguro.');
     },
 
-    exportarTodoExcel: function() {
-        // Exportar todo a Excel (CSV múltiple)
-        var csv = '=== ALUMNOS ===\nNombre,Fecha Registro\n';
-        this.datos.alumnos.forEach(function(a) {
-            csv += a.nombre + ',' + a.fechaRegistro.split('T')[0] + '\n';
+    importarDatos: function() {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = function(e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    var datos = JSON.parse(e.target.result);
+                    localStorage.setItem('aulaPreescolar_data', JSON.stringify(datos));
+                    alert('✅ Datos restaurados correctamente');
+                    location.reload();
+                } catch(err) {
+                    alert('❌ Archivo inválido: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    },
+
+    cargarAjustes: function() {
+        document.getElementById('ajuste-nombre').value = this.datos.maestra.nombre || '';
+        document.getElementById('ajuste-grupo').value = this.datos.maestra.grupo || '3';
+        document.getElementById('ajuste-ciclo').value = this.datos.maestra.ciclo || '2026-2027';
+    },
+
+    guardarAjustes: function() {
+        this.datos.maestra.nombre = document.getElementById('ajuste-nombre').value;
+        this.datos.maestra.grupo = document.getElementById('ajuste-grupo').value;
+        this.datos.maestra.ciclo = document.getElementById('ajuste-ciclo').value;
+        this.guardarDatos();
+        alert('✅ Ajustes guardados');
+    },
+
+    borrarTodo: function() {
+        if (confirm('⚠️ ¿Estás seguro? Esto borrará TODOS tus datos.')) {
+            localStorage.removeItem('aulaPreescolar_data');
+            location.reload();
+        }
+    },
+
+    initPWAInstall: function() {
+        var self = this;
+        window.addEventListener('beforeinstallprompt', function(e) {
+            console.log('PWA instalable');
+            e.preventDefault();
+            self.deferredPrompt = e;
+            var banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.style.display = 'block';
         });
 
-        csv += '\n=== ASISTENCIA ===\nFecha,Al
+        window.addEventListener('appinstalled', function() {
+            console.log('PWA instalada');
+            self.deferredPrompt = null;
+            var banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.style.display = 'none';
+        });
+    },
+
+    instalarPWA: function() {
+        var self = this;
+        if (!this.deferredPrompt) {
+            alert('Menú navegador → "Agregar a pantalla principal"');
+            return;
+        }
+        this.deferredPrompt.prompt();
+        this.deferredPrompt.userChoice.then(function(r) {
+            console.log('Instalación:', r.outcome);
+            self.deferredPrompt = null;
+            var banner = document.getElementById('pwa-install-banner');
+            if (banner) banner.style.display = 'none';
+        });
+    }
+};
+
+// Iniciar cuando DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM listo');
+    app.init();
+});
