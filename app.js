@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────
-// AULA PREESCOLAR - APP PRINCIPAL (FASE 1)
+// AULA PREESCOLAR - APP PRINCIPAL (FASE 1 - MEJORADA)
 // ─────────────────────────────────────────────────────────────────────
 
 const app = {
@@ -14,7 +14,7 @@ const app = {
     deferredPrompt: null,
 
     init: function() {
-        console.log('Aula Preescolar iniciado');
+        console.log('🎓 Aula Preescolar iniciado');
         this.cargarDatos();
         this.actualizarUI();
         this.initPWAInstall();
@@ -111,13 +111,13 @@ const app = {
         if (!container) return;
 
         if (this.datos.alumnos.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No hay alumnos registrados</p>';
+            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">🌸 No hay alumnos registrados</p>';
             return;
         }
 
         container.innerHTML = this.datos.alumnos.map(function(alumno) {
             return '<div class="alumno-item">' +
-                '<span><strong>' + alumno.nombre + '</strong></span>' +
+                '<span><strong>👶 ' + alumno.nombre + '</strong></span>' +
                 '<button onclick="app.eliminarAlumno(\'' + alumno.id + '\')">🗑️</button>' +
                 '</div>';
         }).join('');
@@ -128,7 +128,7 @@ const app = {
         if (!container) return;
 
         if (this.datos.alumnos.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">Primero registra alumnos</p>';
+            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">🌸 Primero registra alumnos</p>';
             return;
         }
 
@@ -136,7 +136,7 @@ const app = {
 
         container.innerHTML = this.datos.alumnos.map(function(alumno) {
             return '<div class="asistencia-item">' +
-                '<span><strong>' + alumno.nombre + '</strong></span>' +
+                '<span><strong>👶 ' + alumno.nombre + '</strong></span>' +
                 '<select data-alumno="' + alumno.id + '">' +
                 '<option value="presente">✅ Presente</option>' +
                 '<option value="ausente">❌ Ausente</option>' +
@@ -190,6 +190,35 @@ const app = {
         URL.revokeObjectURL(url);
     },
 
+    exportarTodoExcel: function() {
+        // ✅ FUNCIÓN AGREGADA - Exportar todo a Excel (múltiples hojas)
+        var csv = '=== ALUMNOS ===\nNombre,Fecha Registro\n';
+        this.datos.alumnos.forEach(function(a) {
+            csv += a.nombre + ',' + a.fechaRegistro.split('T')[0] + '\n';
+        });
+
+        csv += '\n=== ASISTENCIA ===\nFecha,Alumno,Estado\n';
+        this.datos.asistencia.forEach(function(r) {
+            var alumno = app.datos.alumnos.find(function(a) { return a.id === r.alumnoId; });
+            csv += r.fecha + ',' + (alumno ? alumno.nombre : 'N/A') + ',' + r.estado + '\n';
+        });
+
+        csv += '\n=== PLANIFICACIONES ===\nSemana,Campo,Actividad,Materiales,Tiempo\n';
+        this.datos.planificaciones.forEach(function(p) {
+            csv += p.semana + ',' + p.campo + ',"' + p.actividad + '","' + p.materiales + '",' + p.tiempo + '\n';
+        });
+
+        var blob = new Blob([csv], { type: 'text/csv' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'aulaPreescolar_completo_' + new Date().toISOString().split('T')[0] + '.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        alert('✅ Datos exportados correctamente');
+    },
+
     filtrarActividades: function() {
         var container = document.getElementById('lista-actividades');
         if (!container) return;
@@ -202,13 +231,13 @@ const app = {
         }
 
         if (actividades.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No hay actividades</p>';
+            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">🌸 No hay actividades</p>';
             return;
         }
 
         container.innerHTML = actividades.map(function(act) {
             return '<div class="actividad-card">' +
-                '<h4>' + act.nombre + '</h4>' +
+                '<h4>🎨 ' + act.nombre + '</h4>' +
                 '<span class="actividad-tag">' + act.campo.toUpperCase() + '</span>' +
                 '<p><strong>Descripción:</strong> ' + act.descripcion + '</p>' +
                 '<p><strong>Materiales:</strong> ' + act.materiales + '</p>' +
@@ -268,7 +297,7 @@ const app = {
         if (!container) return;
 
         if (this.datos.planificaciones.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No hay planificaciones guardadas</p>';
+            container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">🌸 No hay planificaciones guardadas</p>';
             return;
         }
 
@@ -299,7 +328,9 @@ const app = {
         var recursos = [
             { nombre: 'Lista de Asistencia (PDF)', tipo: 'PDF' },
             { nombre: 'Planificación Semanal (PDF)', tipo: 'PDF' },
-            { nombre: 'Calendario Escolar', tipo: 'PDF' }
+            { nombre: 'Calendario Escolar', tipo: 'PDF' },
+            { nombre: 'Carteles de Colores', tipo: 'PDF' },
+            { nombre: 'Carteles de Números', tipo: 'PDF' }
         ];
 
         container.innerHTML = recursos.map(function(rec) {
@@ -312,7 +343,7 @@ const app = {
     },
 
     descargarRecurso: function(nombre) {
-        alert('ℹ️ En producción, esto descargaría: ' + nombre);
+        alert('ℹ️ En producción, esto descargaría: ' + nombre + '\n\nPuedes crear estos PDFs y ponerlos en la carpeta /recursos/');
     },
 
     exportarDatos: function() {
@@ -406,6 +437,6 @@ const app = {
 
 // Iniciar cuando DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM listo');
+    console.log('🎓 DOM listo');
     app.init();
 });
