@@ -1,5 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────
-// AULA PREESCOLAR - MÓDULO LENGUAJES
+// AULA PREESCOLAR - MÓDULO LENGUAJES (COMPLETO ACTUALIZADO)
+// Incluye: PDF real, comentarios editables, responsive design
 // ─────────────────────────────────────────────────────────────────────
 
 console.log('📚 Módulo Lenguajes cargado');
@@ -41,6 +42,8 @@ window.addEventListener('DOMContentLoaded', async function() {
     
     // Cargar alumnos para evaluación
     cargarAlumnosEvaluacion();
+    
+    console.log('✅ Lenguajes.js listo');
 });
 
 // ─────────────────────────────────────────────────────────────────────
@@ -123,7 +126,7 @@ function cargarPlaneacionesGuardadas() {
             return '<div class="aprendizaje-card">' +
                 '<h4>📅 Semana: ' + (p.semana || 'Sin especificar') + ' | Fase ' + p.fase + '</h4>' +
                 '<p><strong>Aprendizaje Esperado:</strong> ' + p.aprendizajeEsperado + '</p>' +
-                '<p><strong>Propósito:</strong> ' + p.propósito + '</p>' +
+                '<p><strong>Propósito:</strong> ' + p.proposito + '</p>' +
                 '<p><strong>Materiales:</strong> ' + p.materiales + '</p>' +
                 '<button class="btn btn-danger" onclick="eliminarPlaneacion(\'' + p.id + '\')" style="margin-top:10px;">🗑️ Eliminar</button>' +
                 '</div>';
@@ -150,8 +153,8 @@ window.filtrarActividadesLenguajes = function() {
     const actividades = window.ACTIVIDADES_PRECARGADAS ? window.ACTIVIDADES_PRECARGADAS.filter(a => a.campo === 'lenguajes') : [];
     
     // Mapeo de categorías (en producción, las actividades tendrían esta clasificación)
+    const categorias = ['expresion-oral', 'lectura', 'escritura', 'artistica', 'corporal'];
     const actividadesConCategoria = actividades.map(function(a, idx) {
-        const categorias = ['expresion-oral', 'lectura', 'escritura', 'artistica', 'corporal'];
         return { ...a, categoria: categorias[idx % 5] };
     });
     
@@ -171,7 +174,7 @@ window.filtrarActividadesLenguajes = function() {
             '<p><strong>Descripción:</strong> ' + act.descripcion + '</p>' +
             '<p><strong>Materiales:</strong> ' + act.materiales + '</p>' +
             '<p><strong>Tiempo:</strong> ' + act.tiempo + ' min | <strong>Edad:</strong> ' + act.edad + '</p>' +
-            '<button class="btn btn-primary" onclick="usarActividadPlaneacion(\'' + act.id + '\')" style="margin-top:10px;">📝 Usar en Planeación</button>' +
+            '<button class="btn btn-primary" onclick="usarActividadPlaneacion(' + act.id + ')" style="margin-top:10px;">📝 Usar en Planeación</button>' +
             '</div>';
     }).join('');
 };
@@ -333,18 +336,37 @@ window.generarReporteEvaluacion = function() {
 };
 
 // ─────────────────────────────────────────────────────────────────────
-// REPORTES
+// REPORTES - CON COMENTARIOS EDITABLES
 // ─────────────────────────────────────────────────────────────────────
+window.cargarComentariosEditables = function() {
+    const alumnoId = document.getElementById('reportes-alumno').value;
+    const comentarioEl = document.getElementById('reporte-comentario-docente');
+    const recomendacionesEl = document.getElementById('reporte-recomendaciones');
+    
+    if (!alumnoId || !comentarioEl || !recomendacionesEl) return;
+    
+    // Limpiar campos
+    comentarioEl.value = '';
+    recomendacionesEl.value = '';
+    
+    // Generar comentario automático automáticamente al seleccionar alumno
+    generarComentarioAutomatico();
+};
+
 window.generarComentarioAutomatico = function() {
     const alumnoId = document.getElementById('reportes-alumno').value;
+    const comentarioEl = document.getElementById('reporte-comentario-docente');
+    const recomendacionesEl = document.getElementById('reporte-recomendaciones');
+    
     if (!alumnoId) {
-        alert('⚠️ Selecciona un alumno');
+        alert('⚠️ Selecciona un alumno primero');
         return;
     }
     
     const evaluaciones = JSON.parse(localStorage.getItem('aulaPreescolar_evaluaciones') || '{}');
     const nivel = evaluaciones['lenguajes'] ? evaluaciones['lenguajes'][alumnoId] : 'proceso';
     
+    // Comentarios por nivel
     const comentarios = {
         inicial: 'El alumno requiere apoyo constante para desarrollar las competencias de lenguaje. Se recomienda trabajar en casa con lectura diaria y conversaciones familiares.',
         proceso: 'El alumno muestra avance en las competencias de lenguaje. Continúa necesitando apoyo en algunas áreas. Se sugiere reforzar la expresión oral en casa.',
@@ -352,17 +374,40 @@ window.generarComentarioAutomatico = function() {
         sobresaliente: 'El alumno destaca en las competencias de lenguaje. Muestra excelente expresión oral, comprensión y creatividad. Se sugiere ofrecerle retos adicionales.'
     };
     
+    // Recomendaciones por nivel
+    const recomendaciones = {
+        inicial: '• Leer cuentos diariamente en casa\n• Conversar sobre las actividades del día\n• Practicar trazos y garabateo\n• Escuchar y repetir canciones',
+        proceso: '• Continuar con la lectura diaria\n• Fomentar que narre experiencias\n• Practicar escritura de su nombre\n• Juegos de rimas y sonidos',
+        logrado: '• Mantener el hábito de lectura\n• Ofrecer libros de diferentes géneros\n• Fomentar que escriba mensajes simples\n• Continuar con conversaciones familiares',
+        sobresaliente: '• Ofrecer libros más complejos\n• Fomentar que escriba historias cortas\n• Juegos de palabras más avanzados\n• Compartir sus creaciones con otros'
+    };
+    
+    // Llenar campos (el docente puede editar después)
+    if (comentarioEl) {
+        comentarioEl.value = comentarios[nivel] || comentarios.proceso;
+    }
+    
+    if (recomendacionesEl) {
+        recomendacionesEl.value = recomendaciones[nivel] || recomendaciones.proceso;
+    }
+    
+    // Mostrar preview
     const container = document.getElementById('reporte-resultado');
-    container.style.display = 'block';
-    container.innerHTML = '<h3>💡 Comentario Automático</h3>' +
-        '<div style="background:white;padding:20px;border-radius:10px;margin-top:10px;">' +
-        '<p style="line-height:1.8;">' + comentarios[nivel] + '</p>' +
-        '</div>';
+    if (container) {
+        container.style.display = 'block';
+        container.innerHTML = '<h3>💡 Comentario Generado</h3>' +
+            '<div style="background:white;padding:20px;border-radius:10px;margin-top:10px;">' +
+            '<p style="line-height:1.8;"><strong>Nivel:</strong> ' + nivel + '</p>' +
+            '<p style="line-height:1.8;"><strong>Comentario:</strong> ' + (comentarios[nivel] || comentarios.proceso) + '</p>' +
+            '<p style="line-height:1.8;"><strong>Recomendaciones:</strong></p>' +
+            '<ul style="line-height:1.8;">' + (recomendaciones[nivel] || recomendaciones.proceso).split('\n').map(r => '<li>' + r.replace('• ', '') + '</li>').join('') + '</ul>' +
+            '<p style="color:#666;font-size:13px;margin-top:15px;">💡 Puedes editar los campos de arriba antes de generar el PDF.</p>' +
+            '</div>';
+    }
+    
+    console.log('✅ Comentario automático generado (editable)');
 };
 
-// ─────────────────────────────────────────────────────────────────────
-// GENERAR REPORTE PDF REAL
-// ─────────────────────────────────────────────────────────────────────
 window.generarReportePDF = async function() {
     const alumnoId = document.getElementById('reportes-alumno').value;
     const periodo = document.getElementById('reportes-periodo').value;
@@ -392,13 +437,28 @@ window.generarReportePDF = async function() {
     const evaluaciones = JSON.parse(localStorage.getItem('aulaPreescolar_evaluaciones') || '{}');
     const nivel = evaluaciones['lenguajes'] ? evaluaciones['lenguajes'][alumnoId] : 'proceso';
     
-    // Comentarios por nivel
-    const comentarios = {
+    // ✅ OBTENER COMENTARIOS EDITABLES (O AUTOMÁTICOS SI ESTÁN VACÍOS)
+    const comentarioDocente = document.getElementById('reporte-comentario-docente').value || '';
+    const recomendacionesDocente = document.getElementById('reporte-recomendaciones').value || '';
+    
+    // Comentarios automáticos de respaldo
+    const comentariosAuto = {
         inicial: 'El alumno requiere apoyo constante para desarrollar las competencias de lenguaje. Se recomienda trabajar en casa con lectura diaria y conversaciones familiares.',
         proceso: 'El alumno muestra avance en las competencias de lenguaje. Continúa necesitando apoyo en algunas áreas. Se sugiere reforzar la expresión oral en casa.',
         logrado: 'El alumno ha alcanzado las competencias esperadas de lenguaje. Demuestra buena expresión oral y comprensión. Se recomienda continuar con la lectura en casa.',
         sobresaliente: 'El alumno destaca en las competencias de lenguaje. Muestra excelente expresión oral, comprensión y creatividad. Se sugiere ofrecerle retos adicionales.'
     };
+    
+    const recomendacionesAuto = {
+        inicial: '• Leer cuentos diariamente en casa\n• Conversar sobre las actividades del día\n• Practicar trazos y garabateo\n• Escuchar y repetir canciones',
+        proceso: '• Continuar con la lectura diaria\n• Fomentar que narre experiencias\n• Practicar escritura de su nombre\n• Juegos de rimas y sonidos',
+        logrado: '• Mantener el hábito de lectura\n• Ofrecer libros de diferentes géneros\n• Fomentar que escriba mensajes simples\n• Continuar con conversaciones familiares',
+        sobresaliente: '• Ofrecer libros más complejos\n• Fomentar que escriba historias cortas\n• Juegos de palabras más avanzados\n• Compartir sus creaciones con otros'
+    };
+    
+    // Usar comentario del docente o el automático
+    const comentarioFinal = comentarioDocente || comentariosAuto[nivel] || comentariosAuto.proceso;
+    const recomendacionesFinal = recomendacionesDocente || recomendacionesAuto[nivel] || recomendacionesAuto.proceso;
     
     // Nombres de niveles
     const nombresNivel = {
@@ -415,11 +475,9 @@ window.generarReportePDF = async function() {
     // ═══════════════════════════════════════════════════════════════
     // ENCABEZADO
     // ═══════════════════════════════════════════════════════════════
-    // Fondo rosa
     doc.setFillColor(255, 107, 157);
     doc.rect(0, 0, 210, 40, 'F');
     
-    // Título
     doc.setFontSize(22);
     doc.setTextColor(255, 255, 255);
     doc.setFont('helvetica', 'bold');
@@ -446,7 +504,6 @@ window.generarReportePDF = async function() {
     // ═══════════════════════════════════════════════════════════════
     // RESULTADO DE EVALUACIÓN
     // ═══════════════════════════════════════════════════════════════
-    // Fondo de sección
     doc.setFillColor(243, 229, 245);
     doc.rect(15, 105, 180, 40, 'F');
     
@@ -455,13 +512,11 @@ window.generarReportePDF = async function() {
     doc.setTextColor(102, 126, 234);
     doc.text('RESULTADO DE EVALUACIÓN - LENGUAJES', 105, 118, { align: 'center' });
     
-    // Nivel de logro
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.text('Nivel de Logro:', 25, 135);
     
-    // Color según nivel
-    let colorNivel = [255, 235, 238]; // inicial
+    let colorNivel = [255, 235, 238];
     if (nivel === 'proceso') colorNivel = [255, 243, 224];
     if (nivel === 'logrado') colorNivel = [232, 245, 233];
     if (nivel === 'sobresaliente') colorNivel = [227, 242, 253];
@@ -473,7 +528,7 @@ window.generarReportePDF = async function() {
     doc.text(nombresNivel[nivel] || 'En Proceso', 135, 138, { align: 'center' });
     
     // ═══════════════════════════════════════════════════════════════
-    // COMENTARIO DEL DOCENTE
+    // COMENTARIO DEL DOCENTE (EDITABLE)
     // ═══════════════════════════════════════════════════════════════
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
@@ -483,41 +538,38 @@ window.generarReportePDF = async function() {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
     
-    // Split text para que quepa en la página
-    const lines = doc.splitTextToSize(comentarios[nivel] || comentarios.proceso, 170);
+    const lines = doc.splitTextToSize(comentarioFinal, 170);
     doc.text(lines, 20, 175);
     
     // ═══════════════════════════════════════════════════════════════
-    // RECOMENDACIONES
+    // RECOMENDACIONES (EDITABLES)
     // ═══════════════════════════════════════════════════════════════
-    const recomendaciones = {
-        inicial: ['• Leer cuentos diariamente en casa', '• Conversar sobre las actividades del día', '• Practicar trazos y garabateo', '• Escuchar y repetir canciones'],
-        proceso: ['• Continuar con la lectura diaria', '• Fomentar que narre experiencias', '• Practicar escritura de su nombre', '• Juegos de rimas y sonidos'],
-        logrado: ['• Mantener el hábito de lectura', '• Ofrecer libros de diferentes géneros', '• Fomentar que escriba mensajes simples', '• Continuar con conversaciones familiares'],
-        sobresaliente: ['• Ofrecer libros más complejos', '• Fomentar que escriba historias cortas', '• Juegos de palabras más avanzados', '• Compartir sus creaciones con otros']
-    };
+    const yPos = 175 + (lines.length * 5) + 20;
     
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('RECOMENDACIONES PARA CASA', 20, 210);
+    doc.text('RECOMENDACIONES PARA CASA', 20, yPos);
     
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    const recLines = recomendaciones[nivel] || recomendaciones.proceso;
+    
+    const recLines = recomendacionesFinal.split('\n');
     recLines.forEach((rec, i) => {
-        doc.text(rec, 25, 220 + (i * 8));
+        doc.text(rec, 25, yPos + 10 + (i * 6));
     });
     
     // ═══════════════════════════════════════════════════════════════
     // FIRMAS
     // ═══════════════════════════════════════════════════════════════
+    const firmaY = yPos + 10 + (recLines.length * 6) + 30;
+    
     doc.setLineWidth(0.5);
-    doc.line(20, 260, 90, 260);
-    doc.line(120, 260, 190, 260);
+    doc.line(20, firmaY, 90, firmaY);
+    doc.line(120, firmaY, 190, firmaY);
     
     doc.setFontSize(10);
-    doc.text('Firma del Docente', 55, 270);
-    doc.text('Firma del Director/a', 155, 270);
+    doc.text('Firma del Docente', 55, firmaY + 10);
+    doc.text('Firma del Director/a', 155, firmaY + 10);
     
     // ═══════════════════════════════════════════════════════════════
     // PIE DE PÁGINA
@@ -532,7 +584,7 @@ window.generarReportePDF = async function() {
     doc.save(nombreArchivo);
     
     console.log('✅ PDF generado:', nombreArchivo);
+    alert('✅ Reporte PDF generado exitosamente\n\nEl comentario y recomendaciones editables fueron incluidos.');
 };
 
-
-console.log('✅ Lenguajes.js listo');
+console.log('✅ Lenguajes.js completo cargado');
