@@ -360,8 +360,179 @@ window.generarComentarioAutomatico = function() {
         '</div>';
 };
 
-window.generarReportePDF = function() {
-    alert('🚧 Próximamente: Generación de PDF con formato oficial SEP');
+// ─────────────────────────────────────────────────────────────────────
+// GENERAR REPORTE PDF REAL
+// ─────────────────────────────────────────────────────────────────────
+window.generarReportePDF = async function() {
+    const alumnoId = document.getElementById('reportes-alumno').value;
+    const periodo = document.getElementById('reportes-periodo').value;
+    
+    if (!alumnoId) {
+        alert('⚠️ Selecciona un alumno');
+        return;
+    }
+    
+    // Obtener datos del alumno
+    const datosLocales = localStorage.getItem('aulaPreescolar_data');
+    if (!datosLocales) {
+        alert('⚠️ No hay datos de alumnos');
+        return;
+    }
+    
+    const datos = JSON.parse(datosLocales);
+    const alumno = datos.alumnos.find(a => a.id === alumnoId);
+    const usuario = JSON.parse(localStorage.getItem('aulaPreescolar_session'));
+    
+    if (!alumno) {
+        alert('⚠️ Alumno no encontrado');
+        return;
+    }
+    
+    // Obtener evaluación del alumno
+    const evaluaciones = JSON.parse(localStorage.getItem('aulaPreescolar_evaluaciones') || '{}');
+    const nivel = evaluaciones['lenguajes'] ? evaluaciones['lenguajes'][alumnoId] : 'proceso';
+    
+    // Comentarios por nivel
+    const comentarios = {
+        inicial: 'El alumno requiere apoyo constante para desarrollar las competencias de lenguaje. Se recomienda trabajar en casa con lectura diaria y conversaciones familiares.',
+        proceso: 'El alumno muestra avance en las competencias de lenguaje. Continúa necesitando apoyo en algunas áreas. Se sugiere reforzar la expresión oral en casa.',
+        logrado: 'El alumno ha alcanzado las competencias esperadas de lenguaje. Demuestra buena expresión oral y comprensión. Se recomienda continuar con la lectura en casa.',
+        sobresaliente: 'El alumno destaca en las competencias de lenguaje. Muestra excelente expresión oral, comprensión y creatividad. Se sugiere ofrecerle retos adicionales.'
+    };
+    
+    // Nombres de niveles
+    const nombresNivel = {
+        inicial: 'Inicial',
+        proceso: 'En Proceso',
+        logrado: 'Logrado',
+        sobresaliente: 'Sobresaliente'
+    };
+    
+    // Crear PDF con jsPDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // ═══════════════════════════════════════════════════════════════
+    // ENCABEZADO
+    // ═══════════════════════════════════════════════════════════════
+    // Fondo rosa
+    doc.setFillColor(255, 107, 157);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    // Título
+    doc.setFontSize(22);
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.text('REPORTE DE EVALUACIÓN', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Campo Formativo: LENGUAJES', 105, 30, { align: 'center' });
+    
+    // ═══════════════════════════════════════════════════════════════
+    // DATOS DEL ALUMNO
+    // ═══════════════════════════════════════════════════════════════
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DATOS DEL ALUMNO', 20, 55);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.text('Nombre: ' + alumno.nombre, 20, 65);
+    doc.text('Grupo: ' + (usuario.escuela || 'Sin especificar'), 20, 75);
+    doc.text('Periodo: ' + (periodo || 'Sin especificar'), 20, 85);
+    doc.text('Fecha de emisión: ' + new Date().toLocaleDateString('es-MX'), 20, 95);
+    
+    // ═══════════════════════════════════════════════════════════════
+    // RESULTADO DE EVALUACIÓN
+    // ═══════════════════════════════════════════════════════════════
+    // Fondo de sección
+    doc.setFillColor(243, 229, 245);
+    doc.rect(15, 105, 180, 40, 'F');
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(102, 126, 234);
+    doc.text('RESULTADO DE EVALUACIÓN - LENGUAJES', 105, 118, { align: 'center' });
+    
+    // Nivel de logro
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Nivel de Logro:', 25, 135);
+    
+    // Color según nivel
+    let colorNivel = [255, 235, 238]; // inicial
+    if (nivel === 'proceso') colorNivel = [255, 243, 224];
+    if (nivel === 'logrado') colorNivel = [232, 245, 233];
+    if (nivel === 'sobresaliente') colorNivel = [227, 242, 253];
+    
+    doc.setFillColor(...colorNivel);
+    doc.roundedRect(90, 125, 90, 20, 5, 5, 'F');
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text(nombresNivel[nivel] || 'En Proceso', 135, 138, { align: 'center' });
+    
+    // ═══════════════════════════════════════════════════════════════
+    // COMENTARIO DEL DOCENTE
+    // ═══════════════════════════════════════════════════════════════
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text('COMENTARIO DEL DOCENTE', 20, 165);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    
+    // Split text para que quepa en la página
+    const lines = doc.splitTextToSize(comentarios[nivel] || comentarios.proceso, 170);
+    doc.text(lines, 20, 175);
+    
+    // ═══════════════════════════════════════════════════════════════
+    // RECOMENDACIONES
+    // ═══════════════════════════════════════════════════════════════
+    const recomendaciones = {
+        inicial: ['• Leer cuentos diariamente en casa', '• Conversar sobre las actividades del día', '• Practicar trazos y garabateo', '• Escuchar y repetir canciones'],
+        proceso: ['• Continuar con la lectura diaria', '• Fomentar que narre experiencias', '• Practicar escritura de su nombre', '• Juegos de rimas y sonidos'],
+        logrado: ['• Mantener el hábito de lectura', '• Ofrecer libros de diferentes géneros', '• Fomentar que escriba mensajes simples', '• Continuar con conversaciones familiares'],
+        sobresaliente: ['• Ofrecer libros más complejos', '• Fomentar que escriba historias cortas', '• Juegos de palabras más avanzados', '• Compartir sus creaciones con otros']
+    };
+    
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RECOMENDACIONES PARA CASA', 20, 210);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    const recLines = recomendaciones[nivel] || recomendaciones.proceso;
+    recLines.forEach((rec, i) => {
+        doc.text(rec, 25, 220 + (i * 8));
+    });
+    
+    // ═══════════════════════════════════════════════════════════════
+    // FIRMAS
+    // ═══════════════════════════════════════════════════════════════
+    doc.setLineWidth(0.5);
+    doc.line(20, 260, 90, 260);
+    doc.line(120, 260, 190, 260);
+    
+    doc.setFontSize(10);
+    doc.text('Firma del Docente', 55, 270);
+    doc.text('Firma del Director/a', 155, 270);
+    
+    // ═══════════════════════════════════════════════════════════════
+    // PIE DE PÁGINA
+    // ═══════════════════════════════════════════════════════════════
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Aula Preescolar - Plan 2022 Fase 2', 105, 285, { align: 'center' });
+    doc.text('Nueva Escuela Mexicana', 105, 290, { align: 'center' });
+    
+    // Guardar PDF
+    const nombreArchivo = 'Reporte_Lenguajes_' + alumno.nombre.replace(/\s/g, '_') + '_' + periodo + '.pdf';
+    doc.save(nombreArchivo);
+    
+    console.log('✅ PDF generado:', nombreArchivo);
 };
+
 
 console.log('✅ Lenguajes.js listo');
