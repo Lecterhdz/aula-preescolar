@@ -171,14 +171,13 @@
                 
                 <div class="form-group">
                     <label>Filtrar por Campo:</label>
-                    <select id="actividades-filtro" onchange="app.filtrarActividades()" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                    <!-- ✅ AHORA (4 campos - CORRECTO) -->
+                    <select id="actividades-filtro">
                         <option value="todos">Todas</option>
-                        <option value="lenguaje">Lenguaje y Comunicación</option>
-                        <option value="pensamiento">Pensamiento Matemático</option>
-                        <option value="exploracion">Exploración del Mundo</option>
-                        <option value="arte">Expresión Artística</option>
-                        <option value="socioemocional">Desarrollo Socioemocional</option>
-                        <option value="fisico">Desarrollo Físico y Salud</option>
+                        <option value="lenguajes">📚 Lenguajes</option>
+                        <option value="saberes">🔬 Saberes y Pensamiento Científico</option>
+                        <option value="etica">🤝 Ética, Naturaleza y Sociedades</option>
+                        <option value="humano">💚 De lo Humano y lo Comunitario</option>
                     </select>
                 </div>
 
@@ -349,6 +348,7 @@
 </body>
 
 </html>
+
 
 
 
