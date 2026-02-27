@@ -406,13 +406,18 @@ window.seleccionarNivelHumano = function(alumnoId, criterioId, nivel) {
     const card = document.querySelector('.alumno-eval-card[data-alumno="' + alumnoId + '"]');
     if (!card) return;
     
-    card.querySelectorAll('.nivel-selector button').forEach(btn => btn.classList.remove('selected'));
+    // Buscar solo los botones dentro del mismo criterio (mismo padre)
+    const botonPadre = event.target.closest('div');
+    if (botonPadre) {
+        botonPadre.querySelectorAll('.nivel-btn').forEach(btn => btn.classList.remove('selected'));
+    }
     event.target.classList.add('selected');
     
     let evaluaciones = JSON.parse(localStorage.getItem('aulaPreescolar_evaluaciones_humano') || '{}');
     if (!evaluaciones[alumnoId]) evaluaciones[alumnoId] = {};
     evaluaciones[alumnoId][criterioId] = nivel;
     localStorage.setItem('aulaPreescolar_evaluaciones_humano', JSON.stringify(evaluaciones));
+    console.log('✅ Evaluación guardada:', alumnoId, criterioId, nivel);
 };
 
 // ─────────────────────────────────────────────────────────────────────
@@ -546,5 +551,6 @@ window.generarReporteHumanoPDF = function() {
     console.log('✅ PDF generado:', nombreArchivo);
     alert('✅ Reporte PDF generado exitosamente');
 };
+
 
 console.log('✅ Humano.js completo cargado');
