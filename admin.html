@@ -50,6 +50,10 @@
             border: 2px solid #FFE0E9;
         }
     </style>
+    <!-- Firebase + Auth COMO MÓDULOS -->
+    <script type="module" src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
 </head>
 <body>
     <header class="header">
@@ -59,7 +63,27 @@
                 <h1>Panel Directivo</h1>
                 <p>Control de Escuela - Plan 2022 Fase 2</p>
             </div>
-            <button onclick="cerrarSesion()" style="margin-left:auto;background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;">🚪 Salir</button>
+            <!-- Opción A: Inline (ahora funcionará) -->
+            <button onclick="cerrarSesion()" style="...">🚪 Salir</button>
+
+            <!-- Opción B: Con ID (más seguro) -->
+            <button id="btn-cerrar-sesion" style="...">🚪 Salir</button>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var btn = document.getElementById('btn-cerrar-sesion');
+                    if (btn) {
+                        btn.addEventListener('click', function() {
+                            if (typeof cerrarSesion === 'function') {
+                                cerrarSesion();
+                            } else {
+                                localStorage.removeItem('aulaPreescolar_session');
+                                window.location.href = 'login.html';
+                            }
+                        });
+                    }
+                });
+            </script>
         </div>
     </header>
 
@@ -111,9 +135,6 @@
     <footer class="footer">
         <p>© 2026 Aula Preescolar - Panel Directivo</p>
     </footer>
-
-    <script type="module" src="firebase-config.js"></script>
-    <script src="auth.js"></script>
-    <script src="admin.js"></script>
 </body>
+
 </html>
