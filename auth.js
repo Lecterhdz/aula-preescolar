@@ -2,6 +2,34 @@
 // AULA PREESCOLAR - AUTENTICACIÓN FIREBASE
 // ─────────────────────────────────────────────────────────────────────
 
+// Hacer funciones disponibles GLOBALMENTE desde el inicio
+window.cerrarSesion = async function() {
+    console.log('🚪 Cerrando sesión...');
+    
+    // Si Firebase no está cargado, solo limpiar localStorage
+    if (!window.auth) {
+        localStorage.removeItem('aulaPreescolar_session');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const { signOut } = window;
+        await signOut(window.auth);
+        localStorage.removeItem('aulaPreescolar_session');
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error('Error cerrar sesión:', error);
+        localStorage.removeItem('aulaPreescolar_session');
+        window.location.href = 'login.html';
+    }
+};
+
+window.obtenerUsuarioActual = function() {
+    const session = localStorage.getItem('aulaPreescolar_session');
+    return session ? JSON.parse(session) : null;
+};
+
 // Esperar a que Firebase esté cargado
 window.addEventListener('DOMContentLoaded', async function() {
     console.log('🔐 Auth.js cargado');
@@ -213,27 +241,6 @@ window.addEventListener('DOMContentLoaded', async function() {
             console.log('⚠️ Sin sesión activa');
         }
     });
-
-    // ─────────────────────────────────────────────────────────────────────
-    // CERRAR SESIÓN (Función global)
-    // ─────────────────────────────────────────────────────────────────────
-    window.cerrarSesion = async function() {
-        try {
-            await signOut(auth);
-            localStorage.removeItem('aulaPreescolar_session');
-            window.location.href = 'login.html';
-        } catch (error) {
-            console.error('Error cerrar sesión:', error);
-        }
-    };
-
-    // ─────────────────────────────────────────────────────────────────────
-    // OBTENER USUARIO ACTUAL (Función global)
-    // ─────────────────────────────────────────────────────────────────────
-    window.obtenerUsuarioActual = function() {
-        const session = localStorage.getItem('aulaPreescolar_session');
-        return session ? JSON.parse(session) : null;
-    };
 
     console.log('✅ Auth.js listo');
 });
