@@ -407,7 +407,9 @@ window.generarComentarioAutomatico = function() {
     
     console.log('✅ Comentario automático generado (editable)');
 };
-
+// ─────────────────────────────────────────────────────────────────────
+// GENERAR REPORTE PDF REAL (CORREGIDO)
+// ─────────────────────────────────────────────────────────────────────
 window.generarReportePDF = async function() {
     const alumnoId = document.getElementById('reportes-alumno').value;
     const periodo = document.getElementById('reportes-periodo').value;
@@ -426,7 +428,10 @@ window.generarReportePDF = async function() {
     
     const datos = JSON.parse(datosLocales);
     const alumno = datos.alumnos.find(a => a.id === alumnoId);
-    const usuario = JSON.parse(localStorage.getItem('aulaPreescolar_session'));
+    
+    // ✅ CORRECCIÓN 1: Validar sesión del usuario
+    const sessionStr = localStorage.getItem('aulaPreescolar_session');
+    const usuario = sessionStr ? JSON.parse(sessionStr) : null;
     
     if (!alumno) {
         alert('⚠️ Alumno no encontrado');
@@ -438,8 +443,8 @@ window.generarReportePDF = async function() {
     const nivel = evaluaciones['lenguajes'] ? evaluaciones['lenguajes'][alumnoId] : 'proceso';
     
     // ✅ OBTENER COMENTARIOS EDITABLES (O AUTOMÁTICOS SI ESTÁN VACÍOS)
-    const comentarioDocente = document.getElementById('reporte-comentario-docente').value || '';
-    const recomendacionesDocente = document.getElementById('reporte-recomendaciones').value || '';
+    const comentarioDocente = document.getElementById('reporte-comentario-docente')?.value || '';
+    const recomendacionesDocente = document.getElementById('reporte-recomendaciones')?.value || '';
     
     // Comentarios automáticos de respaldo
     const comentariosAuto = {
@@ -470,6 +475,12 @@ window.generarReportePDF = async function() {
     
     // Crear PDF con jsPDF
     const { jsPDF } = window.jspdf;
+    
+    if (!jsPDF) {
+        alert('❌ Error: jsPDF no está cargado. Verifica tu conexión a internet.');
+        return;
+    }
+    
     const doc = new jsPDF();
     
     // ═══════════════════════════════════════════════════════════════
@@ -497,7 +508,8 @@ window.generarReportePDF = async function() {
     
     doc.setFont('helvetica', 'normal');
     doc.text('Nombre: ' + alumno.nombre, 20, 65);
-    doc.text('Grupo: ' + (usuario.escuela || 'Sin especificar'), 20, 75);
+    // ✅ CORRECCIÓN: Validar usuario antes de acceder a escuela
+    doc.text('Grupo: ' + (usuario?.escuela || 'Sin especificar'), 20, 75);
     doc.text('Periodo: ' + (periodo || 'Sin especificar'), 20, 85);
     doc.text('Fecha de emisión: ' + new Date().toLocaleDateString('es-MX'), 20, 95);
     
@@ -580,11 +592,33 @@ window.generarReportePDF = async function() {
     doc.text('Nueva Escuela Mexicana', 105, 290, { align: 'center' });
     
     // Guardar PDF
-    const nombreArchivo = 'Reporte_Lenguajes_' + alumno.nombre.replace(/\s/g, '_') + '_' + periodo + '.pdf';
+    const nombreArchivo = 'Reporte_Lenguajes_' + alumno.nombre.replace(/\s/g, '_') + '_' + (periodo || 'SinPeriodo') + '.pdf';
     doc.save(nombreArchivo);
     
     console.log('✅ PDF generado:', nombreArchivo);
-    alert('✅ Reporte PDF generado exitosamente\n\nEl comentario y recomendaciones editables fueron incluidos.');
+    alert('✅ Reporte PDF generado exitosamente\n\nEl archivo se está descargando.');
 };
 
-console.log('✅ Lenguajes.js completo cargado');
+// ─────────────────────────────────────────────────────────────────────
+// GENERAR REPORTE DESDE EVALUACIÓN (CORREGIDO)
+// ─────────────────────────────────────────────────────────────────────
+window.generarReporteEvaluacion = function() {
+    const periodo = document.getElementById('evaluacion-periodo').value;
+    const evaluaciones = JSON.parse(localStorage.getItem('aulaPreescolar_evaluaciones') || '{}');
+    
+    if (!evaluaciones['lenguajes'] || Object.keys(evaluaciones['lenguajes']).length === 0) {
+        alert('⚠️ No hay evaluaciones registradas. Evalúa a los alumnos primero.');
+        return;
+    }
+    
+    // ✅ CORRECCIÓN 2: Redirigir a la pestaña de Reportes para generar PDF
+    const confirmacion = confirm('✅ Hay ' + Object.keys(evaluaciones['lenguajes']).length + ' alumno(s) evaluado(s).\n\n¿Ir a la pestaña "Reportes" para generar el PDF individual?');
+    
+    if (confirmacion) {
+        // Cambiar a pestaña de Reportes
+        document.querySelectorAll('.modulo-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.modulo-content').forEach(content => content.classList.remove('active'));
+        document.querySelectorAll('.modulo-tab')[4].classList.add('active');
+        document.getElementById('reportes').classList.add('active');
+    }
+};
