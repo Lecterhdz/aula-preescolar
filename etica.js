@@ -384,7 +384,12 @@ window.seleccionarNivelEtica = function(alumnoId, criterioId, nivel) {
     const card = document.querySelector('.alumno-eval-card[data-alumno="' + alumnoId + '"]');
     if (!card) return;
     
-    card.querySelectorAll('.nivel-selector button').forEach(btn => btn.classList.remove('selected'));
+    // Buscar solo los botones dentro del mismo criterio (mismo padre)
+    const botonPadre = event.target.closest('div');
+    if (botonPadre) {
+        botonPadre.querySelectorAll('.nivel-btn').forEach(btn => btn.classList.remove('selected'));
+    }
+    
     event.target.classList.add('selected');
     
     let evaluaciones = JSON.parse(localStorage.getItem('aulaPreescolar_evaluaciones_etica') || '{}');
@@ -524,5 +529,6 @@ window.generarReporteEticaPDF = function() {
     console.log('✅ PDF generado:', nombreArchivo);
     alert('✅ Reporte PDF generado exitosamente');
 };
+
 
 console.log('✅ Etica.js completo cargado');
