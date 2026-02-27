@@ -92,6 +92,9 @@
             display: none;
         }
     </style>
+    <!-- Firebase + Auth COMO MÓDULOS (en orden) -->
+    <script type="module" src="firebase-config.js"></script>
+    <script src="auth.js"></script>
 </head>
 <body>
     <header class="header">
@@ -181,9 +184,6 @@
             Los datos se guardan localmente y en la nube (si tienes cuenta)
         </p>
     </footer>
-
-    <!-- Firebase -->
-    <script type="module" src="firebase-config.js"></script>
-    <script src="auth.js"></script>
 </body>
+
 </html>
