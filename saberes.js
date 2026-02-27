@@ -457,10 +457,11 @@ window.seleccionarNivelSaberes = function(alumnoId, competenciaId, nivel) {
     const card = document.querySelector('.alumno-eval-card[data-alumno="' + alumnoId + '"]');
     if (!card) return;
     
-    // Remover selección previa en esta competencia
-    const buttons = card.querySelectorAll('.nivel-selector button');
-    buttons.forEach(btn => btn.classList.remove('selected'));
-    
+    // Buscar solo los botones dentro del mismo criterio (mismo padre)
+    const botonPadre = event.target.closest('div');
+    if (botonPadre) {
+        botonPadre.querySelectorAll('.nivel-btn').forEach(btn => btn.classList.remove('selected'));
+    }
     // Marcar como seleccionado
     event.target.classList.add('selected');
     
@@ -619,5 +620,6 @@ window.generarReporteSaberesPDF = function() {
     console.log('✅ PDF generado:', nombreArchivo);
     alert('✅ Reporte PDF generado exitosamente');
 };
+
 
 console.log('✅ Saberes.js listo');
