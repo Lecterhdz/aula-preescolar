@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6B9D">
+    <title>Aula Preescolar - Panel Directivo</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .dashboard-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 2px solid #FFD6E7;
+        }
+        .dashboard-card h3 {
+            color: #C44569;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        .stat-big {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FF6B9D;
+            text-align: center;
+        }
+        .stat-label {
+            text-align: center;
+            color: #8D6E63;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .docente-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #FFF9FB;
+            border-radius: 12px;
+            margin: 10px 0;
+            border: 2px solid #FFE0E9;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <span style="font-size: 40px;">🏫</span>
+            <div>
+                <h1>Panel Directivo</h1>
+                <p>Control de Escuela - Plan 2022 Fase 2</p>
+            </div>
+            <button onclick="cerrarSesion()" style="margin-left:auto;background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;">🚪 Salir</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <h2>📊 Dashboard General</h2>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>👩‍🏫 Docentes</h3>
+                    <div class="stat-big" id="stat-docentes">0</div>
+                    <div class="stat-label">Activos esta semana</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>👶 Alumnos</h3>
+                    <div class="stat-big" id="stat-alumnos">0</div>
+                    <div class="stat-label">Total registrados</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>📅 Asistencia</h3>
+                    <div class="stat-big" id="stat-asistencia">0%</div>
+                    <div class="stat-label">Promedio semanal</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>📋 Planeaciones</h3>
+                    <div class="stat-big" id="stat-planeaciones">0</div>
+                    <div class="stat-label">Esta semana</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>👩‍🏫 Docentes de la Escuela</h2>
+            <div id="lista-docentes" style="margin: 20px 0;">
+                <p style="text-align:center;color:#666;">Cargando docentes...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🚀 Acciones Rápidas</h2>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="alert('Próximamente: Invitar docente')">➕ Invitar Docente</button>
+                <button class="btn btn-success" onclick="alert('Próximamente: Exportar reporte')">📊 Exportar Reporte</button>
+                <button class="btn btn-info" onclick="window.location.href='index.html'">👩‍🏫 Ver Vista Docente</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Aula Preescolar - Panel Directivo</p>
+    </footer>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
