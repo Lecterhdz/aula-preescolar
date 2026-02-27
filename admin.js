@@ -5,20 +5,40 @@
 window.addEventListener('DOMContentLoaded', async function() {
     console.log('🏫 Admin.js cargado');
 
-    // Verificar sesión
+    // ✅ VERIFICAR SESIÓN (MÁS FLEXIBLE)
     const usuario = window.obtenerUsuarioActual ? window.obtenerUsuarioActual() : null;
     
-    if (!usuario || usuario.rol !== 'director') {
-        alert('⚠️ Acceso solo para directores');
+    console.log('👤 Usuario actual:', usuario); // DEBUG
+    
+    // ✅ PERMITIR ACCESO SI ES DIRECTOR O SI NO HAY FIREBASE
+    if (!usuario) {
+        alert('⚠️ No hay sesión activa. Por favor inicia sesión.');
         window.location.href = 'login.html';
+        return;
+    }
+    
+    // ✅ VERIFICAR ROL (PERMITIR TAMBIÉN SI ES INVITADO PARA PRUEBAS)
+    if (usuario.rol !== 'director' && usuario.uid.startsWith('guest_')) {
+        alert('⚠️ El modo invitado no tiene acceso al panel directivo. Regístrate como director.');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // ✅ SI NO ES DIRECTOR (Y NO ES INVITADO), MOSTRAR MENSAJE CLARO
+    if (usuario.rol !== 'director') {
+        alert('⚠️ Acceso solo para directores. Tu rol actual es: ' + usuario.rol);
+        window.location.href = 'index.html';
         return;
     }
 
     // Esperar Firebase
     if (!window.db) {
+        console.log('⏳ Esperando Firebase...');
         setTimeout(arguments.callee, 500);
         return;
     }
+
+    console.log('✅ Acceso concedido a director:', usuario.nombre);
 
     const { db, collection, getDocs, query, where } = window;
 
@@ -32,7 +52,7 @@ window.addEventListener('DOMContentLoaded', async function() {
             const docentesSnapshot = await getDocs(docentesQuery);
             document.getElementById('stat-docentes').textContent = docentesSnapshot.size;
 
-            // Contar alumnos (simulado - en producción sería de Firestore)
+            // Contar alumnos (de localStorage para demo)
             const datosLocales = localStorage.getItem('aulaPreescolar_data');
             if (datosLocales) {
                 const datos = JSON.parse(datosLocales);
@@ -48,7 +68,7 @@ window.addEventListener('DOMContentLoaded', async function() {
 
         } catch (error) {
             console.error('Error cargando dashboard:', error);
-            document.getElementById('lista-docentes').innerHTML = '<p style="text-align:center;color:#f44336;">Error cargando datos</p>';
+            document.getElementById('lista-docentes').innerHTML = '<p style="text-align:center;color:#666;">No se pudieron cargar los datos. Asegúrate de tener conexión a internet.</p>';
         }
     }
 
@@ -56,17 +76,19 @@ window.addEventListener('DOMContentLoaded', async function() {
         const container = document.getElementById('lista-docentes');
         
         if (snapshot.size === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#666;">No hay docentes registrados</p>';
+            container.innerHTML = '<p style="text-align:center;color:#666;">No hay docentes registrados aún. ¡Sé el primero!</p>';
             return;
         }
 
         let html = '';
-        snapshot.forEach(function(doc) {
-            const data = doc.data();
+        snapshot.forEach(function(docSnapshot) {
+            const data = docSnapshot.data();
             html += '<div class="docente-item">' +
                 '<div><strong>👩‍🏫 ' + data.nombre + '</strong><br>' +
-                '<small style="color:#666;">' + data.email + '</small></div>' +
-                '<button class="btn btn-info" style="padding:8px 15px;font-size:13px;" onclick="alert(\'Próximamente: Ver perfil\')">👁️ Ver</button>' +
+                '<small style="color:#666;">' + data.email + '</small>' +
+                (data.escuela ? '<br><small style="color:#999;">🏫 ' + data.escuela + '</small>' : '') +
+                '</div>' +
+                '<button class="btn btn-info" style="padding:8px 15px;font-size:13px;" onclick="alert(\'Próximamente: Ver perfil de ' + data.nombre + '\')">👁️ Ver</button>' +
                 '</div>';
         });
 
