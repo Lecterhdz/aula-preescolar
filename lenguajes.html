@@ -93,22 +93,40 @@
             padding: 20px;
             border-radius: 12px;
             border: 2px solid #FFD6E7;
+            overflow: hidden; /* ✅ Evita que el contenido se salga */
+            word-wrap: break-word; /* ✅ Rompe palabras largas */
         }
         .nivel-selector {
             display: flex;
             gap: 5px;
             margin: 10px 0;
+            flex-wrap: wrap; /* ✅ Permite que los botones salten de línea */
         }
         .nivel-btn {
             flex: 1;
-            padding: 8px;
+            min-width: 80px; /* ✅ Ancho mínimo para que no se aplasten */
+            padding: 8px 5px;
             border: 2px solid #ddd;
             border-radius: 8px;
             background: white;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
+            word-break: break-word; /* ✅ Rompe texto largo */
         }
+
+        /* En móvil, los botones ocupan 2 por fila */
+        @media (max-width: 480px) {
+            .nivel-selector {
+                gap: 8px;
+            }
+            .nivel-btn {
+                flex: 0 0 calc(50% - 8px); /* ✅ 2 botones por fila */
+                font-size: 10px;
+                padding: 10px 5px;
+            }
+        }
+        
         .nivel-btn.inicial { background: #FFEBEE; border-color: #f44336; }
         .nivel-btn.proceso { background: #FFF3E0; border-color: #FF9800; }
         .nivel-btn.logrado { background: #E8F5E9; border-color: #4CAF50; }
@@ -387,3 +405,4 @@
 </body>
 
 </html>
+
