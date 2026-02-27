@@ -1,44 +1,66 @@
 // ─────────────────────────────────────────────────────────────────────
-// AULA PREESCOLAR - PANEL DIRECTIVO
+// AULA PREESCOLAR - PANEL DIRECTIVO (CORREGIDO)
 // ─────────────────────────────────────────────────────────────────────
 
-window.addEventListener('DOMContentLoaded', async function() {
-    console.log('🏫 Admin.js cargado');
+console.log('🏫 Admin.js cargado');
 
-    // ✅ VERIFICAR SESIÓN (MÁS FLEXIBLE)
-    const usuario = window.obtenerUsuarioActual ? window.obtenerUsuarioActual() : null;
+window.addEventListener('DOMContentLoaded', async function() {
+    // ✅ LEER SESIÓN DIRECTAMENTE DE LOCALSTORAGE (SIN FUNCIÓN)
+    const sessionStr = localStorage.getItem('aulaPreescolar_session');
     
-    console.log('👤 Usuario actual:', usuario); // DEBUG
+    console.log('📋 Sesión raw:', sessionStr); // DEBUG
     
-    // ✅ PERMITIR ACCESO SI ES DIRECTOR O SI NO HAY FIREBASE
-    if (!usuario) {
+    if (!sessionStr) {
+        console.log('❌ No hay sesión en localStorage');
         alert('⚠️ No hay sesión activa. Por favor inicia sesión.');
         window.location.href = 'login.html';
         return;
     }
     
-    // ✅ VERIFICAR ROL (PERMITIR TAMBIÉN SI ES INVITADO PARA PRUEBAS)
-    if (usuario.rol !== 'director' && usuario.uid.startsWith('guest_')) {
-        alert('⚠️ El modo invitado no tiene acceso al panel directivo. Regístrate como director.');
+    let usuario;
+    try {
+        usuario = JSON.parse(sessionStr);
+    } catch (e) {
+        console.log('❌ Error parseando sesión:', e);
+        localStorage.removeItem('aulaPreescolar_session');
+        alert('⚠️ Sesión inválida. Por favor inicia sesión de nuevo.');
         window.location.href = 'login.html';
         return;
     }
     
-    // ✅ SI NO ES DIRECTOR (Y NO ES INVITADO), MOSTRAR MENSAJE CLARO
-    if (usuario.rol !== 'director') {
-        alert('⚠️ Acceso solo para directores. Tu rol actual es: ' + usuario.rol);
+    console.log('👤 Usuario:', usuario); // DEBUG
+    console.log('👤 Rol:', usuario.rol); // DEBUG
+    
+    // ✅ VERIFICAR ROL (CASE-INSENSITIVE)
+    const rolNormalizado = (usuario.rol || '').toLowerCase().trim();
+    
+    if (rolNormalizado !== 'director') {
+        console.log('❌ Rol no es director:', rolNormalizado);
+        alert('⚠️ Acceso solo para directores.\n\nTu rol actual es: ' + usuario.rol);
         window.location.href = 'index.html';
         return;
     }
+    
+    console.log('✅ Acceso concedido a director:', usuario.nombre);
 
     // Esperar Firebase
     if (!window.db) {
         console.log('⏳ Esperando Firebase...');
-        setTimeout(arguments.callee, 500);
+        let intentos = 0;
+        const esperarFirebase = setInterval(function() {
+            if (window.db || intentos > 20) {
+                clearInterval(esperarFirebase);
+                if (window.db) {
+                    cargarDashboard();
+                } else {
+                    console.log('❌ Firebase no disponible');
+                    document.getElementById('lista-docentes').innerHTML = '<p style="text-align:center;color:#f44336;">Error: No se pudo conectar a la base de datos.</p>';
+                }
+            }
+            intentos++;
+        }, 500);
         return;
     }
-
-    console.log('✅ Acceso concedido a director:', usuario.nombre);
 
     const { db, collection, getDocs, query, where } = window;
 
@@ -47,10 +69,13 @@ window.addEventListener('DOMContentLoaded', async function() {
     // ─────────────────────────────────────────────────────────────────────
     async function cargarDashboard() {
         try {
+            console.log('📊 Cargando dashboard...');
+            
             // Contar docentes activos
             const docentesQuery = query(collection(db, 'usuarios'), where('rol', '==', 'docente'));
             const docentesSnapshot = await getDocs(docentesQuery);
             document.getElementById('stat-docentes').textContent = docentesSnapshot.size;
+            console.log('👩‍🏫 Docentes:', docentesSnapshot.size);
 
             // Contar alumnos (de localStorage para demo)
             const datosLocales = localStorage.getItem('aulaPreescolar_data');
@@ -58,6 +83,9 @@ window.addEventListener('DOMContentLoaded', async function() {
                 const datos = JSON.parse(datosLocales);
                 document.getElementById('stat-alumnos').textContent = datos.alumnos ? datos.alumnos.length : 0;
                 document.getElementById('stat-planeaciones').textContent = datos.planificaciones ? datos.planificaciones.length : 0;
+            } else {
+                document.getElementById('stat-alumnos').textContent = '0';
+                document.getElementById('stat-planeaciones').textContent = '0';
             }
 
             // Asistencia (simulado)
@@ -66,17 +94,24 @@ window.addEventListener('DOMContentLoaded', async function() {
             // Cargar lista de docentes
             cargarListaDocentes(docentesSnapshot);
 
+            console.log('✅ Dashboard cargado');
+
         } catch (error) {
             console.error('Error cargando dashboard:', error);
-            document.getElementById('lista-docentes').innerHTML = '<p style="text-align:center;color:#666;">No se pudieron cargar los datos. Asegúrate de tener conexión a internet.</p>';
+            document.getElementById('lista-docentes').innerHTML = '<p style="text-align:center;color:#666;">No se pudieron cargar los datos.</p>';
         }
     }
 
     function cargarListaDocentes(snapshot) {
         const container = document.getElementById('lista-docentes');
         
+        if (!container) {
+            console.log('❌ No se encontró lista-docentes');
+            return;
+        }
+        
         if (snapshot.size === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#666;">No hay docentes registrados aún. ¡Sé el primero!</p>';
+            container.innerHTML = '<p style="text-align:center;color:#666;">No hay docentes registrados aún.</p>';
             return;
         }
 
@@ -84,11 +119,11 @@ window.addEventListener('DOMContentLoaded', async function() {
         snapshot.forEach(function(docSnapshot) {
             const data = docSnapshot.data();
             html += '<div class="docente-item">' +
-                '<div><strong>👩‍🏫 ' + data.nombre + '</strong><br>' +
-                '<small style="color:#666;">' + data.email + '</small>' +
+                '<div><strong>👩‍🏫 ' + (data.nombre || 'Sin nombre') + '</strong><br>' +
+                '<small style="color:#666;">' + (data.email || '') + '</small>' +
                 (data.escuela ? '<br><small style="color:#999;">🏫 ' + data.escuela + '</small>' : '') +
                 '</div>' +
-                '<button class="btn btn-info" style="padding:8px 15px;font-size:13px;" onclick="alert(\'Próximamente: Ver perfil de ' + data.nombre + '\')">👁️ Ver</button>' +
+                '<button class="btn btn-info" style="padding:8px 15px;font-size:13px;" onclick="alert(\'Próximamente: Ver perfil\')">👁️ Ver</button>' +
                 '</div>';
         });
 
