@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6B9D">
+    <title>Aula Preescolar - Solicitud de Cotización</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .form-header h1 {
+            color: #FF6B9D;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+        }
+        .form-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        .form-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #F8F9FA;
+            border-radius: 15px;
+            border-left: 5px solid #FF6B9D;
+        }
+        .form-section h3 {
+            color: #5D4037;
+            margin: 0 0 20px 0;
+            font-size: 20px;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        .form-group label {
+            display: block;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            color: #5D4037;
+        }
+        .form-group label .required {
+            color: #f44336;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF6B9D;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checkbox-item:hover {
+            border-color: #FF6B9D;
+            background: #FFF3E0;
+        }
+        .checkbox-item input {
+            width: 20px;
+            height: 20px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #FF6B9D, #C44569);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 30px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+        .success-message {
+            display: none;
+            background: #E8F5E9;
+            color: #2E7D32;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .success-message h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .btn-volver {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+            color: #5D4037;
+            border: 2px solid #DEE2E6;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-volver:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 20px;
+                padding: 25px;
+            }
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <span style="font-size: 40px;">📋</span>
+            <div>
+                <h1>Solicitud de Cotización</h1>
+                <p>Adaptaciones Personalizadas - Aula Preescolar</p>
+            </div>
+            <button id="btn-cerrar-sesion" style="margin-left:auto;background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;">🏠 Volver</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>🎓 Cotización Personalizada</h1>
+                <p>Completa este formulario y te enviaremos una cotización en 24-48 horas hábiles</p>
+            </div>
+
+            <form id="cotizacionForm" onsubmit="enviarCotizacion(event)">
+                <!-- SECCIÓN 1: DATOS DE CONTACTO -->
+                <div class="form-section">
+                    <h3>📋 Datos de Contacto</h3>
+                    
+                    <div class="form-group">
+                        <label>Nombre completo <span class="required">*</span></label>
+                        <input type="text" name="nombre" required placeholder="Ej: María González">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cargo / Puesto <span class="required">*</span></label>
+                        <select name="cargo" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="docente">Docente</option>
+                            <option value="director">Director/a</option>
+                            <option value="coordinador">Coordinador/a</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nombre de la Institución <span class="required">*</span></label>
+                        <input type="text" name="institucion" required placeholder="Ej: Preescolar Rayito de Sol">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo de Institución <span class="required">*</span></label>
+                        <select name="tipo_institucion" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="publico">Preescolar Público</option>
+                            <option value="privado">Preescolar Privado</option>
+                            <option value="guarderia">Guardería</option>
+                            <option value="cendi">Centro de Desarrollo Infantil</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número de Alumnos <span class="required">*</span></label>
+                        <select name="alumnos" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="menos-30">Menos de 30</option>
+                            <option value="30-100">30-100</option>
+                            <option value="101-200">101-200</option>
+                            <option value="201-500">201-500</option>
+                            <option value="mas-500">Más de 500</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número de Docentes <span class="required">*</span></label>
+                        <select name="docentes" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="1-5">1-5</option>
+                            <option value="6-10">6-10</option>
+                            <option value="11-20">11-20</option>
+                            <option value="21-50">21-50</option>
+                            <option value="mas-50">Más de 50</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" name="email" required placeholder="tu@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>WhatsApp / Teléfono <span class="required">*</span></label>
+                        <input type="tel" name="telefono" required placeholder="55-XXXX-XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ciudad y Estado <span class="required">*</span></label>
+                        <input type="text" name="ubicacion" required placeholder="Ej: Ciudad de México">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: PLAN DE INTERÉS -->
+                <div class="form-section">
+                    <h3>💎 Plan de Interés</h3>
+                    
+                    <div class="form-group">
+                        <label>¿Qué plan te interesa? <span class="required">*</span></label>
+                        <select name="plan" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="gratis">GRATIS ($0/año)</option>
+                            <option value="profesional">PROFESIONAL ($1,499/año)</option>
+                            <option value="escuela">ESCUELA ($5,999/año)</option>
+                            <option value="distrito">DISTRITO ($19,999/año)</option>
+                            <option value="asesoria">No estoy seguro, necesito asesoría</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>¿Cuándo te gustaría comenzar? <span class="required">*</span></label>
+                        <select name="inicio" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="inmediato">Inmediato</option>
+                            <option value="1-2-semanas">En 1-2 semanas</option>
+                            <option value="1-mes">En 1 mes</option>
+                            <option value="ciclo-escolar">En el próximo ciclo escolar</option>
+                            <option value="investigando">Solo estoy investigando</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: ADAPTACIONES -->
+                <div class="form-section">
+                    <h3>🔧 Adaptaciones Personalizadas</h3>
+                    
+                    <div class="form-group">
+                        <label>¿Necesitas adaptaciones personalizadas? <span class="required">*</span></label>
+                        <select name="adaptaciones_necesita" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="si-varias">Sí, varias</option>
+                            <option value="si-una">Sí, una o dos</option>
+                            <option value="tal-vez">Tal vez</option>
+                            <option value="no">No, el plan estándar es suficiente</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>¿Qué tipo de adaptaciones te interesan?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="adaptaciones[]" value="diseno">
+                                🎨 Diseño Personalizado (colores, logo)
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="adaptaciones[]" value="modulos">
+                                📦 Módulos Adicionales
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="adaptaciones[]" value="reportes">
+                                📊 Reportes Personalizados
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="adaptaciones[]" value="integraciones">
+                                🔗 Integraciones con otros sistemas
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="adaptaciones[]" value="capacitacion">
+                                👥 Capacitación Extra
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="adaptaciones[]" value="soporte">
+                                💬 Soporte Dedicado
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>DESCRIBE TU NECESIDAD ESPECÍFICA <span class="required">*</span></label>
+                        <textarea name="descripcion" required placeholder="Por favor, describe con el mayor detalle posible:
+- ¿Qué funcionalidad necesitas?
+- ¿Qué problema buscas resolver?
+- ¿Cómo imaginas que debería funcionar?
+- ¿Hay algún sistema similar que uses como referencia?"></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: PRESUPUESTO -->
+                <div class="form-section">
+                    <h3>💰 Presupuesto y Tiempos</h3>
+                    
+                    <div class="form-group">
+                        <label>¿Tienes un presupuesto estimado para las adaptaciones?</label>
+                        <select name="presupuesto">
+                            <option value="">Seleccionar...</option>
+                            <option value="menos-2000">Menos de $2,000 MXN</option>
+                            <option value="2000-5000">$2,000 - $5,000 MXN</option>
+                            <option value="5001-10000">$5,001 - $10,000 MXN</option>
+                            <option value="10001-20000">$10,001 - $20,000 MXN</option>
+                            <option value="mas-20000">Más de $20,000 MXN</option>
+                            <option value="no-definido">No tengo presupuesto definido</option>
+                            <option value="depende">Depende de la cotización</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>¿Qué tan urgente es esta necesidad? (1 = No urgente, 5 = Muy urgente)</label>
+                        <select name="urgencia">
+                            <option value="1">1 - No urgente, puedo esperar</option>
+                            <option value="2">2 - Poco urgente</option>
+                            <option value="3" selected>3 - Moderadamente urgente</option>
+                            <option value="4">4 - Urgente</option>
+                            <option value="5">5 - Muy urgente, lo necesito ya</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5: INFORMACIÓN ADICIONAL -->
+                <div class="form-section">
+                    <h3>📝 Información Adicional</h3>
+                    
+                    <div class="form-group">
+                        <label>¿Cómo te enteraste de Aula Preescolar?</label>
+                        <select name="referencia">
+                            <option value="">Seleccionar...</option>
+                            <option value="redes-sociales">Redes sociales (Facebook, Instagram)</option>
+                            <option value="google">Búsqueda en Google</option>
+                            <option value="recomendacion">Recomendación de otra maestra</option>
+                            <option value="whatsapp">Grupo de WhatsApp de docentes</option>
+                            <option value="capacitacion">Capacitación / Taller</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>¿Tienes alguna otra duda o comentario?</label>
+                        <textarea name="comentarios" placeholder="Escribe aquí cualquier duda o comentario adicional..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>¿Autorizas que te contactemos para dar seguimiento a tu cotización? <span class="required">*</span></label>
+                        <select name="contacto_autorizacion" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="email">Sí, por email</option>
+                            <option value="whatsapp">Sí, por WhatsApp</option>
+                            <option value="ambos">Sí, por ambos</option>
+                            <option value="solo-email">No, solo envíen la cotización por email</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- BOTÓN DE ENVÍO -->
+                <button type="submit" class="btn-submit">📤 Enviar Solicitud de Cotización</button>
+
+                <!-- MENSAJE DE ÉXITO -->
+                <div id="successMessage" class="success-message">
+                    <h3>✅ ¡Solicitud Enviada!</h3>
+                    <p>Gracias por tu interés en Aula Preescolar.</p>
+                    <p>Tu cotización estará lista en <strong>24-48 horas hábiles</strong>.</p>
+                    <p>La enviaremos al email que proporcionaste.</p>
+                    <p style="margin-top:20px;">¿Dudas inmediatas?<br>📧 hdzlecter@gmail.com | 💬 WhatsApp: 55-XXXX-XXXX</p>
+                    <a href="ventas.html" class="btn-volver">← Volver a Planes y Precios</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Aula Preescolar - Todos los derechos reservados</p>
+        <p style="margin-top:10px;font-size:12px;color:#999;">Plan 2022 Fase 2 - Nueva Escuela Mexicana</p>
+    </footer>
+
+    <script>
+        // Botón volver
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
+            window.location.href = 'ventas.html';
+        });
+
+        function enviarCotizacion(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Manejar checkboxes múltiples
+            const adaptaciones = formData.getAll('adaptaciones[]');
+            data.adaptaciones = adaptaciones;
+            
+            console.log('📋 Datos del formulario:', data);
+            
+            // OPCIÓN 1: Guardar en localStorage (para demo)
+            let cotizaciones = JSON.parse(localStorage.getItem('aulaPreescolar_cotizaciones') || '[]');
+            cotizaciones.push({
+                ...data,
+                fecha: new Date().toISOString(),
+                estado: 'pendiente'
+            });
+            localStorage.setItem('aulaPreescolar_cotizaciones', JSON.stringify(cotizaciones));
+            
+            // OPCIÓN 2: Enviar a Formspree (configura tu form ID)
+            // fetch('https://formspree.io/f/TU_FORM_ID', {
+            //     method: 'POST',
+            //     body: JSON.stringify(data),
+            //     headers: { 'Content-Type': 'application/json' }
+            // }).then(response => {
+            //     if (response.ok) {
+            //         form.style.display = 'none';
+            //         document.getElementById('successMessage').style.display = 'block';
+            //     }
+            // });
+            
+            // OPCIÓN 3: Enviar a WhatsApp automáticamente
+            const mensajeWhatsApp = `🎓 NUEVA COTIZACIÓN\n\n` +
+                `👤 Nombre: ${data.nombre}\n` +
+                `🏫 Institución: ${data.institucion}\n` +
+                `📍 Ubicación: ${data.ubicacion}\n` +
+                `💼 Cargo: ${data.cargo}\n` +
+                `👥 Alumnos: ${data.alumnos} | Docentes: ${data.docentes}\n` +
+                `💎 Plan: ${data.plan}\n` +
+                `🔧 Adaptaciones: ${data.adaptaciones_necesita}\n` +
+                `💰 Presupuesto: ${data.presupuesto}\n` +
+                `⚡ Urgencia: ${data.urgencia}/5\n` +
+                `📧 Email: ${data.email}\n` +
+                `📱 WhatsApp: ${data.telefono}\n\n` +
+                `📝 Descripción:\n${data.descripcion}`;
+            
+            // SIMULACIÓN DE ENVÍO (para demo)
+            setTimeout(function() {
+                form.style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                
+                console.log('✅ Cotización guardada:', data);
+                
+                // Opcional: Abrir WhatsApp para enviar manualmente
+                // window.open(`https://wa.me/52155XXXXXXXX?text=${encodeURIComponent(mensajeWhatsApp)}`, '_blank');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
