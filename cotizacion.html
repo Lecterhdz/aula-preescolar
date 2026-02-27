@@ -442,53 +442,102 @@
             
             console.log('📋 Datos del formulario:', data);
             
-            // OPCIÓN 1: Guardar en localStorage (para demo)
+            // ─────────────────────────────────────────────────────────────────────
+            // ENVIAR A WHATSAPP
+            // ─────────────────────────────────────────────────────────────────────
+            
+            // Número de WhatsApp (formato internacional sin +)
+            const whatsappNumber = '524641177116';
+            
+            // Formatear adaptaciones seleccionadas
+            const adaptacionesTexto = adaptaciones.length > 0 
+                ? adaptaciones.map(a => '• ' + a).join('\n') 
+                : 'Ninguna';
+            
+            // Crear mensaje formateado para WhatsApp
+            const mensajeWhatsApp = 
+`🎓 *NUEVA COTIZACIÓN - AULA PREESCOLAR*
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 *DATOS DE CONTACTO*
+• Nombre: ${data.nombre}
+• Cargo: ${data.cargo}
+• Institución: ${data.institucion}
+• Tipo: ${data.tipo_institucion}
+• Ubicación: ${data.ubicacion}
+• Email: ${data.email}
+• WhatsApp: ${data.telefono}
+
+📊 *INSTITUCIÓN*
+• Alumnos: ${data.alumnos}
+• Docentes: ${data.docentes}
+
+💎 *PLAN DE INTERÉS*
+• Plan: ${data.plan}
+• Inicio: ${data.inicio}
+
+🔧 *ADAPTACIONES*
+• ¿Necesita adaptaciones?: ${data.adaptaciones_necesita}
+• Tipo de adaptaciones:
+${adaptacionesTexto}
+
+📝 *DESCRIPCIÓN DE NECESIDAD*
+${data.descripcion}
+
+💰 *PRESUPUESTO Y TIEMPOS*
+• Presupuesto: ${data.presupuesto || 'No especificado'}
+• Urgencia: ${data.urgencia}/5
+
+📍 *REFERENCIA*
+• ¿Cómo se enteró?: ${data.referencia || 'No especificado'}
+
+💬 *COMENTARIOS ADICIONALES*
+${data.comentarios || 'Ninguno'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+📅 Fecha: ${new Date().toLocaleDateString('es-MX')}
+⏰ Hora: ${new Date().toLocaleTimeString('es-MX')}
+`;
+            
+            // Guardar en localStorage (respaldo)
             let cotizaciones = JSON.parse(localStorage.getItem('aulaPreescolar_cotizaciones') || '[]');
             cotizaciones.push({
                 ...data,
+                adaptaciones: adaptaciones,
                 fecha: new Date().toISOString(),
                 estado: 'pendiente'
             });
             localStorage.setItem('aulaPreescolar_cotizaciones', JSON.stringify(cotizaciones));
             
-            // OPCIÓN 2: Enviar a Formspree (configura tu form ID)
-            // fetch('https://formspree.io/f/TU_FORM_ID', {
-            //     method: 'POST',
-            //     body: JSON.stringify(data),
-            //     headers: { 'Content-Type': 'application/json' }
-            // }).then(response => {
-            //     if (response.ok) {
-            //         form.style.display = 'none';
-            //         document.getElementById('successMessage').style.display = 'block';
-            //     }
-            // });
+            // Mostrar mensaje de "Enviando..."
+            const btnSubmit = form.querySelector('.btn-submit');
+            const textoOriginal = btnSubmit.textContent;
+            btnSubmit.textContent = '⏳ Enviando a WhatsApp...';
+            btnSubmit.disabled = true;
             
-            // OPCIÓN 3: Enviar a WhatsApp automáticamente
-            const mensajeWhatsApp = `🎓 NUEVA COTIZACIÓN\n\n` +
-                `👤 Nombre: ${data.nombre}\n` +
-                `🏫 Institución: ${data.institucion}\n` +
-                `📍 Ubicación: ${data.ubicacion}\n` +
-                `💼 Cargo: ${data.cargo}\n` +
-                `👥 Alumnos: ${data.alumnos} | Docentes: ${data.docentes}\n` +
-                `💎 Plan: ${data.plan}\n` +
-                `🔧 Adaptaciones: ${data.adaptaciones_necesita}\n` +
-                `💰 Presupuesto: ${data.presupuesto}\n` +
-                `⚡ Urgencia: ${data.urgencia}/5\n` +
-                `📧 Email: ${data.email}\n` +
-                `📱 WhatsApp: ${data.telefono}\n\n` +
-                `📝 Descripción:\n${data.descripcion}`;
-            
-            // SIMULACIÓN DE ENVÍO (para demo)
+            // Simular pequeño delay para mejor UX
             setTimeout(function() {
+                // Codificar mensaje para URL
+                const mensajeCodificado = encodeURIComponent(mensajeWhatsApp);
+                
+                // Crear URL de WhatsApp
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${mensajeCodificado}`;
+                
+                // Abrir WhatsApp en nueva pestaña
+                window.open(whatsappUrl, '_blank');
+                
+                // Mostrar mensaje de éxito
                 form.style.display = 'none';
                 document.getElementById('successMessage').style.display = 'block';
                 
-                console.log('✅ Cotización guardada:', data);
+                console.log('✅ Cotización enviada a WhatsApp:', whatsappNumber);
                 
-                // Opcional: Abrir WhatsApp para enviar manualmente
-                // window.open(`https://wa.me/52155XXXXXXXX?text=${encodeURIComponent(mensajeWhatsApp)}`, '_blank');
-            }, 1000);
+                // Restaurar botón (por si regresan)
+                btnSubmit.textContent = textoOriginal;
+                btnSubmit.disabled = false;
+            }, 1500);
         }
     </script>
 </body>
+
 </html>
