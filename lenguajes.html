@@ -337,10 +337,10 @@
         <div id="reportes" class="modulo-content">
             <div class="card">
                 <h2>📄 Reportes Automáticos</h2>
-                
+        
                 <div class="form-group">
                     <label>👶 Seleccionar Alumno:</label>
-                    <select id="reportes-alumno" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                    <select id="reportes-alumno" onchange="cargarComentariosEditables()" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
                         <option value="">Seleccionar...</option>
                     </select>
                 </div>
@@ -350,9 +350,23 @@
                     <input type="month" id="reportes-periodo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
                 </div>
 
+                <!-- ✅ COMENTARIO EDITABLE DEL DOCENTE -->
+                <div class="form-group">
+                    <label>💬 Comentario del Docente:</label>
+                    <textarea id="reporte-comentario-docente" placeholder="El comentario automático aparecerá aquí. Puedes editarlo o agregar más información." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; min-height: 120px;"></textarea>
+                    <small style="color:#999;">💡 Tip: El comentario se genera automáticamente según el nivel, pero puedes editarlo libremente.</small>
+                </div>
+
+                <!-- ✅ RECOMENDACIONES EDITABLES -->
+                <div class="form-group">
+                    <label>🏠 Recomendaciones para Casa:</label>
+                    <textarea id="reporte-recomendaciones" placeholder="Las recomendaciones automáticas aparecerán aquí. Puedes editarlas o agregar las tuyas." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; min-height: 100px;"></textarea>
+                    <small style="color:#999;">💡 Separa cada recomendación con un salto de línea.</small>
+                </div>
+
                 <div class="button-group">
-                    <button class="btn btn-primary" onclick="generarReportePDF()">📄 Generar Reporte PDF</button>
-                    <button class="btn btn-info" onclick="generarComentarioAutomatico()">✨ Comentario Automático</button>
+                    <button class="btn btn-primary" onclick="generarComentarioAutomatico()">✨ Generar Comentario Automático</button>
+                    <button class="btn btn-success" onclick="generarReportePDF()">📄 Generar Reporte PDF</button>
                     <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
                 </div>
 
@@ -405,4 +419,5 @@
 </body>
 
 </html>
+
 
