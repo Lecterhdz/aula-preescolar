@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4ECDC4">
+    <title>Aula Preescolar - Módulo Saberes</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .modulo-header {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        .modulo-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        .modulo-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #F8F9FA;
+            color: #5D4037;
+            border: 2px solid #E0E0E0;
+        }
+        .modulo-tab.active {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            border-color: #4ECDC4;
+        }
+        .modulo-content {
+            display: none;
+        }
+        .modulo-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .experimento-card {
+            background: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #4ECDC4;
+        }
+        .semaforo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .semaforo-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 3px solid #ddd;
+        }
+        .semaforo-item.dominado { border-color: #4CAF50; background: #E8F5E9; }
+        .semaforo-item.desarrollo { border-color: #FFC107; background: #FFF8E1; }
+        .semaforo-item.apoyo { border-color: #f44336; background: #FFEBEE; }
+        .semaforo-icon { font-size: 40px; margin-bottom: 10px; }
+        .problema-card {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <span style="font-size: 40px;">🔬</span>
+            <div>
+                <h1>Módulo Saberes</h1>
+                <p>Saberes y Pensamiento Científico - Plan 2022 Fase 2</p>
+            </div>
+            <button id="btn-panel-directivo" style="display:none;background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;margin-right:10px;">🏫 Panel Directivo</button>
+            <button id="btn-cerrar-sesion" style="background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;">🚪 Salir</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- HEADER DEL MÓDULO -->
+        <div class="modulo-header">
+            <h2 style="margin:0 0 10px 0;">🔬 Saberes y Pensamiento Científico</h2>
+            <p style="margin:0;opacity:0.9;">Desarrolla competencias matemáticas, científicas y de pensamiento crítico</p>
+        </div>
+
+        <!-- PESTAÑAS DEL MÓDULO -->
+        <div class="modulo-tabs">
+            <button class="modulo-tab active" onclick="mostrarSubmodulo('planeacion')">📝 Planeación</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('experimentos')">🧪 Experimentos</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('matematicas')">📊 Seguimiento Matemático</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('problemas')">💡 Problemas</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('evaluacion')">📈 Evaluación</button>
+        </div>
+
+        <!-- SUBMÓDULO: PLANEACIÓN -->
+        <div id="planeacion" class="modulo-content active">
+            <div class="card">
+                <h2>📝 Planeación Semanal - Saberes</h2>
+                
+                <div class="form-group">
+                    <label>🎯 Fase de Desarrollo:</label>
+                    <div class="fase-selector" style="display:flex;gap:10px;margin:15px 0;">
+                        <button class="fase-btn" onclick="seleccionarFase(3)" style="flex:1;padding:12px;border:2px solid #ddd;border-radius:10px;background:white;cursor:pointer;font-weight:600;">Fase 3<br><small>3 años</small></button>
+                        <button class="fase-btn" onclick="seleccionarFase(4)" style="flex:1;padding:12px;border:2px solid #ddd;border-radius:10px;background:white;cursor:pointer;font-weight:600;">Fase 4<br><small>4 años</small></button>
+                        <button class="fase-btn" onclick="seleccionarFase(5)" style="flex:1;padding:12px;border:2px solid #ddd;border-radius:10px;background:white;cursor:pointer;font-weight:600;">Fase 5<br><small>5 años</small></button>
+                    </div>
+                    <input type="hidden" id="planeacion-fase">
+                </div>
+
+                <div class="form-group">
+                    <label>📚 Aprendizaje Esperado:</label>
+                    <select id="planeacion-aprendizaje" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="">Seleccionar...</option>
+                        <option value="1">Resuelve problemas de conteo y comparación</option>
+                        <option value="2">Identifica y describe patrones</option>
+                        <option value="3">Formula preguntas e hipótesis</option>
+                        <option value="4">Registra información mediante dibujos y símbolos</option>
+                        <option value="5">Clasifica objetos por características</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🎯 Propósito de la Sesión:</label>
+                    <textarea id="planeacion-proposito" placeholder="¿Qué lograrán los alumnos?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 80px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📋 Secuencia Didáctica:</label>
+                    <textarea id="planeacion-secuencia" placeholder="Inicio, Desarrollo, Cierre" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 150px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>🛠️ Materiales:</label>
+                    <input type="text" id="planeacion-materiales" placeholder="Ej: Bloques, fichas, recipientes..." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Semana:</label>
+                    <input type="week" id="planeacion-semana" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="guardarPlaneacionSaberes()">💾 Guardar Planeación</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+
+                <div id="planeaciones-saberes-guardadas" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: EXPERIMENTOS -->
+        <div id="experimentos" class="modulo-content">
+            <div class="card">
+                <h2>🧪 Registro de Experimentos</h2>
+                
+                <div class="form-group">
+                    <label>👶 Alumno:</label>
+                    <select id="experimento-alumno" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="">Seleccionar...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🔬 Experimento:</label>
+                    <input type="text" id="experimento-nombre" placeholder="Ej: Flota o se hunde" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>💭 Hipótesis del Niño:</label>
+                    <textarea id="experimento-hipotesis" placeholder="¿Qué crees que pasará?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 60px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>🛠️ Materiales:</label>
+                    <input type="text" id="experimento-materiales" placeholder="Materiales usados" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>👀 Resultado Observado:</label>
+                    <textarea id="experimento-resultado" placeholder="¿Qué sucedió realmente?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 60px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>💡 Conclusión Guiada:</label>
+                    <textarea id="experimento-conclusion" placeholder="¿Qué aprendimos?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 60px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Fecha:</label>
+                    <input type="date" id="experimento-fecha" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="guardarExperimento()">💾 Guardar Experimento</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+
+                <div id="lista-experimentos" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: MATEMÁTICAS -->
+        <div id="matematicas" class="modulo-content">
+            <div class="card">
+                <h2>📊 Seguimiento Matemático</h2>
+                
+                <div class="semaforo-grid" id="semaforo-matematicas">
+                    <!-- Se llena con JS -->
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: PROBLEMAS -->
+        <div id="problemas" class="modulo-content">
+            <div class="card">
+                <h2>💡 Generador de Problemas</h2>
+                
+                <div class="form-group">
+                    <label>🎯 Edad:</label>
+                    <select id="problemas-edad" onchange="generarProblema()" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="3">3 años</option>
+                        <option value="4">4 años</option>
+                        <option value="5">5 años</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Tipo:</label>
+                    <select id="problemas-tipo" onchange="generarProblema()" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="conteo">Conteo</option>
+                        <option value="comparacion">Comparación</option>
+                        <option value="suma">Suma Simple</option>
+                        <option value="resta">Resta Simple</option>
+                    </select>
+                </div>
+
+                <div id="problema-generado" class="problema-card" style="display:none;">
+                    <h3 style="color:#E65100;margin:0 0 15px 0;">🎲 Problema Generado</h3>
+                    <p id="problema-texto" style="font-size:18px;font-weight:600;color:#333;line-height:1.8;"></p>
+                    <button class="btn btn-info" onclick="generarProblema()" style="margin-top:15px;">🔄 Generar Otro</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: EVALUACIÓN -->
+        <div id="evaluacion" class="modulo-content">
+            <div class="card">
+                <h2>📈 Evaluación - Saberes</h2>
+                
+                <div class="form-group">
+                    <label>📅 Periodo:</label>
+                    <input type="month" id="evaluacion-periodo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div id="lista-alumnos-evaluacion-saberes" style="margin: 20px 0;"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="generarReporteSaberesPDF()">📄 Generar Reporte PDF</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Aula Preescolar - Módulo Saberes</p>
+        <p style="margin-top: 10px; font-size: 12px; color: #999;">Plan 2022 Fase 2 - Nueva Escuela Mexicana</p>
+    </footer>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="saberes.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const session = localStorage.getItem('aulaPreescolar_session');
+            if (session) {
+                const usuario = JSON.parse(session);
+                if (usuario.rol === 'director') {
+                    document.getElementById('btn-panel-directivo').style.display = 'inline-block';
+                    document.getElementById('btn-panel-directivo').addEventListener('click', function() {
+                        window.location.href = 'admin.html';
+                    });
+                }
+            }
+            
+            document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
+                localStorage.removeItem('aulaPreescolar_session');
+                window.location.href = 'login.html';
+            });
+        });
+
+        function mostrarSubmodulo(id) {
+            document.querySelectorAll('.modulo-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.modulo-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>
