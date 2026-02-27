@@ -26,8 +26,10 @@
             <span style="font-size: 40px;">🎓</span>
             <div>
                 <h1>Aula Preescolar</h1>
-                <p>Planificador Docente - Fase 1</p>
+                <p>Planificador Docente - Plan 2022 Fase 2</p>
             </div>
+            <!-- Botón cerrar sesión -->
+            <button onclick="cerrarSesion()" style="margin-left:auto;background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;">🚪 Salir</button>
         </div>
     </header>
 
@@ -105,7 +107,7 @@
                 <div class="form-group">
                     <label>Campo Formativo:</label>
                     <!-- ✅ AHORA (Plan 2022 Fase 2 - 4 campos - CORRECTO) -->
-                    <select id="plan-campo">
+                    <select id="plan-campo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
                         <option value="">Seleccionar...</option>
                         <option value="lenguajes">📚 Lenguajes</option>
                         <option value="saberes">🔬 Saberes y Pensamiento Científico</option>
@@ -172,7 +174,7 @@
                 <div class="form-group">
                     <label>Filtrar por Campo:</label>
                     <!-- ✅ AHORA (4 campos - CORRECTO) -->
-                    <select id="actividades-filtro">
+                    <select id="actividades-filtro" onchange="app.filtrarActividades()" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
                         <option value="todos">Todas</option>
                         <option value="lenguajes">📚 Lenguajes</option>
                         <option value="saberes">🔬 Saberes y Pensamiento Científico</option>
@@ -348,6 +350,7 @@
 </body>
 
 </html>
+
 
 
 
