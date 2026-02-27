@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FFE66D">
+    <title>Aula Preescolar - Módulo Ética</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <!-- jsPDF para generar PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        .modulo-header {
+            background: linear-gradient(135deg, #FFE66D 0%, #FFD54F 100%);
+            color: #5D4037;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        .modulo-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        .modulo-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #F8F9FA;
+            color: #5D4037;
+            border: 2px solid #E0E0E0;
+        }
+        .modulo-tab.active {
+            background: linear-gradient(135deg, #FFE66D 0%, #FFD54F 100%);
+            color: #5D4037;
+            border-color: #FFE66D;
+        }
+        .modulo-content {
+            display: none;
+        }
+        .modulo-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .convivencia-card {
+            background: linear-gradient(135deg, #FFF9FB 0%, #F3E5F5 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #FFE66D;
+        }
+        .valor-checkbox {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 15px 8px 0;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+        }
+        .valor-checkbox input {
+            width: 18px;
+            height: 18px;
+        }
+        .valor-checkbox.checked {
+            background: #FFF9C4;
+            border-color: #FFE66D;
+        }
+        .proyecto-card {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #4CAF50;
+        }
+        .fase-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .fase-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .fase-btn.active {
+            background: linear-gradient(135deg, #FFE66D 0%, #FFD54F 100%);
+            border-color: #FFE66D;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .modulo-tabs {
+                flex-direction: column;
+            }
+            .modulo-tab {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <span style="font-size: 40px;">🤝</span>
+            <div>
+                <h1>Módulo Ética</h1>
+                <p>Ética, Naturaleza y Sociedades - Plan 2022 Fase 2</p>
+            </div>
+            <button id="btn-panel-directivo" style="display:none;background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;margin-right:10px;">🏫 Panel Directivo</button>
+            <button id="btn-cerrar-sesion" style="background:rgba(255,255,255,0.2);color:white;border:1px solid white;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;">🚪 Salir</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- HEADER DEL MÓDULO -->
+        <div class="modulo-header">
+            <h2 style="margin:0 0 10px 0;">🤝 Ética, Naturaleza y Sociedades</h2>
+            <p style="margin:0;opacity:0.9;">Desarrolla valores, conciencia ambiental y comprensión de la comunidad</p>
+        </div>
+
+        <!-- PESTAÑAS DEL MÓDULO -->
+        <div class="modulo-tabs">
+            <button class="modulo-tab active" onclick="mostrarSubmodulo('planeacion')">📝 Planeación</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('convivencia')">💕 Convivencia</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('proyectos')">🌱 Proyectos</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('valores')">⭐ Valores</button>
+            <button class="modulo-tab" onclick="mostrarSubmodulo('evaluacion')">📊 Evaluación</button>
+        </div>
+
+        <!-- SUBMÓDULO: PLANEACIÓN -->
+        <div id="planeacion" class="modulo-content active">
+            <div class="card">
+                <h2>📝 Planeación Semanal - Ética</h2>
+                
+                <div class="form-group">
+                    <label>🎯 Fase de Desarrollo:</label>
+                    <div class="fase-selector">
+                        <button class="fase-btn" onclick="seleccionarFaseEtica(3)">Fase 3<br><small>3 años</small></button>
+                        <button class="fase-btn" onclick="seleccionarFaseEtica(4)">Fase 4<br><small>4 años</small></button>
+                        <button class="fase-btn" onclick="seleccionarFaseEtica(5)">Fase 5<br><small>5 años</small></button>
+                    </div>
+                    <input type="hidden" id="planeacion-fase">
+                </div>
+
+                <div class="form-group">
+                    <label>📚 Aprendizaje Esperado:</label>
+                    <select id="planeacion-aprendizaje" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="">Seleccionar...</option>
+                        <option value="1">Identifica emociones y las expresa adecuadamente</option>
+                        <option value="2">Reconoce la importancia de cuidar el medio ambiente</option>
+                        <option value="3">Participa en actividades que benefician a la comunidad</option>
+                        <option value="4">Comprende las normas de convivencia en diferentes espacios</option>
+                        <option value="5">Valora la diversidad cultural de su comunidad</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🎯 Propósito de la Sesión:</label>
+                    <textarea id="planeacion-proposito" placeholder="¿Qué lograrán los alumnos?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 80px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📋 Secuencia Didáctica:</label>
+                    <textarea id="planeacion-secuencia" placeholder="Inicio, Desarrollo, Cierre" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 150px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>🛠️ Materiales:</label>
+                    <input type="text" id="planeacion-materiales" placeholder="Ej: Cartulinas, imágenes, cuentos..." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Semana:</label>
+                    <input type="week" id="planeacion-semana" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="guardarPlaneacionEtica()">💾 Guardar Planeación</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+
+                <div id="planeaciones-etica-guardadas" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: CONVIVENCIA -->
+        <div id="convivencia" class="modulo-content">
+            <div class="card">
+                <h2>💕 Registro de Convivencia</h2>
+                
+                <div class="form-group">
+                    <label>👶 Alumno:</label>
+                    <select id="convivencia-alumno" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="">Seleccionar...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Tipo de Situación:</label>
+                    <select id="convivencia-tipo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="positiva">✅ Situación Positiva</option>
+                        <option value="conflicto">⚠️ Conflicto</option>
+                        <option value="intervencion">🔧 Intervención Docente</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📖 Descripción de la Situación:</label>
+                    <textarea id="convivencia-descripcion" placeholder="Describe lo sucedido..." style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 80px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>💡 Estrategia Aplicada:</label>
+                    <textarea id="convivencia-estrategia" placeholder="¿Qué se hizo para resolver o reforzar?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 60px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📊 Resultado:</label>
+                    <select id="convivencia-resultado" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="favorable">✅ Favorable</option>
+                        <option value="regular">⚠️ Regular</option>
+                        <option value="requiere-seguimiento">🔶 Requiere Seguimiento</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Fecha:</label>
+                    <input type="date" id="convivencia-fecha" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="guardarConvivencia()">💾 Guardar Registro</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+
+                <div id="lista-convivencia" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: PROYECTOS -->
+        <div id="proyectos" class="modulo-content">
+            <div class="card">
+                <h2>🌱 Proyectos Comunitarios</h2>
+                
+                <div class="form-group">
+                    <label>📝 Nombre del Proyecto:</label>
+                    <input type="text" id="proyecto-nombre" placeholder="Ej: Cuidemos el agua" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>🎯 Objetivo del Proyecto:</label>
+                    <textarea id="proyecto-objetivo" placeholder="¿Qué se busca lograr?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 60px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>👥 Participación del Grupo:</label>
+                    <select id="proyecto-participacion" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                        <option value="alta">🟢 Alta (80-100%)</option>
+                        <option value="media">🟡 Media (50-79%)</option>
+                        <option value="baja">🔴 Baja (menos de 50%)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Descripción de Actividades:</label>
+                    <textarea id="proyecto-actividades" placeholder="Describe las actividades realizadas" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 80px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>💡 Reflexión Grupal:</label>
+                    <textarea id="proyecto-reflexion" placeholder="¿Qué aprendimos como grupo?" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 60px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Fecha de Inicio:</label>
+                    <input type="date" id="proyecto-fecha-inicio" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>📅 Fecha de Término:</label>
+                    <input type="date" id="proyecto-fecha-fin" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="guardarProyecto()">💾 Guardar Proyecto</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+
+                <div id="lista-proyectos" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: VALORES -->
+        <div id="valores" class="modulo-content">
+            <div class="card">
+                <h2>⭐ Valores Trabajados</h2>
+                
+                <div class="form-group">
+                    <label>📅 Semana:</label>
+                    <input type="week" id="valores-semana" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Selecciona los valores trabajados esta semana:</label>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:15px 0;">
+                        <label class="valor-checkbox"><input type="checkbox" value="respeto" onchange="toggleValor(this)">🤝 Respeto</label>
+                        <label class="valor-checkbox"><input type="checkbox" value="empatia" onchange="toggleValor(this)">💕 Empatía</label>
+                        <label class="valor-checkbox"><input type="checkbox" value="honestidad" onchange="toggleValor(this)">✨ Honestidad</label>
+                        <label class="valor-checkbox"><input type="checkbox" value="responsabilidad" onchange="toggleValor(this)">📋 Responsabilidad</label>
+                        <label class="valor-checkbox"><input type="checkbox" value="colaboracion" onchange="toggleValor(this)">👥 Colaboración</label>
+                        <label class="valor-checkbox"><input type="checkbox" value="tolerancia" onchange="toggleValor(this)">🌈 Tolerancia</label>
+                        <label class="valor-checkbox"><input type="checkbox" value="gratitud" onchange="toggleValor(this)">🙏 Gratitud</label>
+                        <label class="valor-checkbox"><input type="checkbox" value="solidaridad" onchange="toggleValor(this)">💚 Solidaridad</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Observaciones sobre los valores:</label>
+                    <textarea id="valores-observaciones" placeholder="Describe cómo se trabajaron los valores" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; min-height: 80px;"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="guardarValores()">💾 Guardar Valores</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+
+                <div id="lista-valores" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- SUBMÓDULO: EVALUACIÓN -->
+        <div id="evaluacion" class="modulo-content">
+            <div class="card">
+                <h2>📊 Evaluación - Ética</h2>
+                
+                <div class="form-group">
+                    <label>📅 Periodo:</label>
+                    <input type="month" id="evaluacion-periodo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                </div>
+
+                <div id="lista-alumnos-evaluacion-etica" style="margin: 20px 0;"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="generarReporteEticaPDF()">📄 Generar Reporte PDF</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='index.html'">↩️ Volver</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Aula Preescolar - Módulo Ética</p>
+        <p style="margin-top: 10px; font-size: 12px; color: #999;">Plan 2022 Fase 2 - Nueva Escuela Mexicana</p>
+    </footer>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="etica.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const session = localStorage.getItem('aulaPreescolar_session');
+            if (session) {
+                const usuario = JSON.parse(session);
+                if (usuario.rol === 'director') {
+                    document.getElementById('btn-panel-directivo').style.display = 'inline-block';
+                    document.getElementById('btn-panel-directivo').addEventListener('click', function() {
+                        window.location.href = 'admin.html';
+                    });
+                }
+            }
+            
+            document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
+                localStorage.removeItem('aulaPreescolar_session');
+                window.location.href = 'login.html';
+            });
+            
+            // Establecer fecha de hoy
+            const fechaInput = document.getElementById('convivencia-fecha');
+            if (fechaInput) fechaInput.valueAsDate = new Date();
+            
+            const hoy = new Date();
+            const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');
+            const periodoInput = document.getElementById('evaluacion-periodo');
+            if (periodoInput) periodoInput.value = `${hoy.getFullYear()}-${mes}`;
+        });
+
+        function mostrarSubmodulo(id) {
+            document.querySelectorAll('.modulo-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.modulo-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>
