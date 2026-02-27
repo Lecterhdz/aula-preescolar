@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6B9D">
+    <title>Aula Preescolar - Planes y Precios</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #FF6B9D 0%, #C44569 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 50px;
+        }
+        .hero h1 {
+            font-size: 42px;
+            margin: 0 0 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .hero p {
+            font-size: 18px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+            padding: 0 20px;
+        }
+        .pricing-card {
+            background: white;
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .pricing-card.destacado {
+            border-color: #FF6B9D;
+            transform: scale(1.05);
+        }
+        .pricing-card.destacado::before {
+            content: '⭐ MÁS POPULAR';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: linear-gradient(135deg, #FF6B9D, #C44569);
+            color: white;
+            padding: 5px 40px;
+            font-size: 12px;
+            font-weight: 700;
+            transform: rotate(45deg);
+        }
+        .pricing-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .pricing-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #5D4037;
+            margin: 0 0 15px 0;
+        }
+        .pricing-price {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FF6B9D;
+            margin: 0 0 10px 0;
+        }
+        .pricing-price small {
+            font-size: 16px;
+            color: #999;
+            font-weight: 400;
+        }
+        .pricing-period {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0;
+            text-align: left;
+        }
+        .pricing-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #5D4037;
+            font-size: 14px;
+        }
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+        .pricing-features li::before {
+            content: '✅';
+            margin-right: 10px;
+        }
+        .pricing-features li.no::before {
+            content: '❌';
+        }
+        .btn-pricing {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-pricing.primary {
+            background: linear-gradient(135deg, #FF6B9D, #C44569);
+            color: white;
+        }
+        .btn-pricing.secondary {
+            background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+            color: #5D4037;
+            border: 2px solid #DEE2E6;
+        }
+        .btn-pricing:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        /* SECCIÓN DE ADAPTACIONES */
+        .adaptaciones-section {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            padding: 60px 20px;
+            margin: 50px 0;
+            border-radius: 30px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .adaptaciones-section h2 {
+            text-align: center;
+            color: #E65100;
+            font-size: 32px;
+            margin: 0 0 20px 0;
+        }
+        .adaptaciones-section p {
+            text-align: center;
+            color: #5D4037;
+            font-size: 16px;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+        }
+        .adaptaciones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .adaptacion-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .adaptacion-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .adaptacion-card h3 {
+            color: #E65100;
+            font-size: 18px;
+            margin: 0 0 10px 0;
+        }
+        .adaptacion-card p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+            text-align: center;
+        }
+        
+        /* TESTIMONIOS */
+        .testimonios-section {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            padding: 60px 20px;
+            margin: 50px 0;
+            border-radius: 30px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .testimonios-section h2 {
+            text-align: center;
+            color: #2E7D32;
+            font-size: 32px;
+            margin: 0 0 40px 0;
+        }
+        .testimonios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .testimonio-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .testimonio-text {
+            font-style: italic;
+            color: #5D4037;
+            line-height: 1.8;
+            margin: 0 0 20px 0;
+        }
+        .testimonio-author {
+            font-weight: 700;
+            color: #2E7D32;
+            margin: 0;
+        }
+        .testimonio-role {
+            color: #999;
+            font-size: 13px;
+            margin: 0;
+        }
+        
+        /* FAQ */
+        .faq-section {
+            padding: 60px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-section h2 {
+            text-align: center;
+            color: #5D4037;
+            font-size: 32px;
+            margin: 0 0 40px 0;
+        }
+        .faq-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-left: 5px solid #FF6B9D;
+        }
+        .faq-question {
+            font-weight: 700;
+            color: #5D4037;
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-answer {
+            color: #666;
+            line-height: 1.8;
+            margin: 0;
+            display: none;
+        }
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        .faq-toggle {
+            font-size: 20px;
+            color: #FF6B9D;
+        }
+        
+        /* CONTACTO */
+        .contacto-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 30px;
+            max-width: 1200px;
+            margin: 50px auto;
+        }
+        .contacto-section h2 {
+            font-size: 32px;
+            margin: 0 0 20px 0;
+        }
+        .contacto-section p {
+            font-size: 16px;
+            opacity: 0.95;
+            margin: 0 0 30px 0;
+        }
+        .btn-contacto {
+            background: white;
+            color: #667eea;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-contacto:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        /* GARANTÍA */
+        .garantia-badge {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .garantia-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #5D4037;
+            font-size: 14px;
+        }
+        .garantia-icon {
+            font-size: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            .pricing-card.destacado {
+                transform: none;
+            }
+            .pricing-price {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>🎓 Planes y Precios</h1>
+        <p>Elige el plan perfecto para tu preescolar. Todos incluyen los 4 campos formativos del Plan 2022 Fase 2.</p>
+    </section>
+
+    <!-- PRICING GRID -->
+    <div class="pricing-grid">
+        <!-- PLAN GRATIS -->
+        <div class="pricing-card">
+            <div class="pricing-icon">🆓</div>
+            <h3 class="pricing-name">GRATIS</h3>
+            <div class="pricing-price">$0 <small>MXN</small></div>
+            <div class="pricing-period">Para siempre</div>
+            <ul class="pricing-features">
+                <li>✅ Hasta 30 alumnos</li>
+                <li>✅ 4 Campos Formativos</li>
+                <li>✅ 30 Actividades precargadas</li>
+                <li>✅ Asistencia básica</li>
+                <li>✅ Exportar a Excel</li>
+                <li class="no">❌ Reportes PDF</li>
+                <li class="no">❌ Panel Directivo</li>
+                <li class="no">❌ Soporte prioritario</li>
+            </ul>
+            <button class="btn-pricing secondary" onclick="window.location.href='login.html'">Comenzar Gratis</button>
+        </div>
+
+        <!-- PLAN PROFESIONAL -->
+        <div class="pricing-card destacado">
+            <div class="pricing-icon">💎</div>
+            <h3 class="pricing-name">PROFESIONAL</h3>
+            <div class="pricing-price">$1,499 <small>MXN</small></div>
+            <div class="pricing-period">por año (~$125/mes)</div>
+            <ul class="pricing-features">
+                <li>✅ Alumnos ilimitados</li>
+                <li>✅ 4 Campos Formativos completos</li>
+                <li>✅ 100+ Actividades premium</li>
+                <li>✅ Reportes PDF profesionales</li>
+                <li>✅ Comentarios editables</li>
+                <li>✅ Respaldo en la nube</li>
+                <li class="no">❌ Panel Directivo</li>
+                <li class="no">❌ Múltiples docentes</li>
+            </ul>
+            <button class="btn-pricing primary" onclick="window.location.href='login.html'">Elegir Profesional</button>
+        </div>
+
+        <!-- PLAN ESCUELA -->
+        <div class="pricing-card">
+            <div class="pricing-icon">🏫</div>
+            <h3 class="pricing-name">ESCUELA</h3>
+            <div class="pricing-price">$5,999 <small>MXN</small></div>
+            <div class="pricing-period">por año (~$500/mes)</div>
+            <ul class="pricing-features">
+                <li>✅ Todo lo de Profesional</li>
+                <li>✅ Hasta 20 docentes incluidos</li>
+                <li>✅ Panel Directivo completo</li>
+                <li>✅ Dashboard con gráfica radar</li>
+                <li>✅ Alertas tempranas</li>
+                <li>✅ Reportes consolidados</li>
+                <li>✅ 2 sesiones de capacitación</li>
+                <li>✅ Soporte WhatsApp prioritario</li>
+            </ul>
+            <button class="btn-pricing secondary" onclick="window.location.href='login.html'">Elegir Escuela</button>
+        </div>
+
+        <!-- PLAN DISTRITO -->
+        <div class="pricing-card">
+            <div class="pricing-icon">🌟</div>
+            <h3 class="pricing-name">DISTRITO</h3>
+            <div class="pricing-price">$19,999 <small>MXN</small></div>
+            <div class="pricing-period">por año (~$1,667/mes)</div>
+            <ul class="pricing-features">
+                <li>✅ Todo lo de Escuela</li>
+                <li>✅ Hasta 10 escuelas incluidas</li>
+                <li>✅ Docentes ilimitados</li>
+                <li>✅ Reportes comparativos</li>
+                <li>✅ API de integración</li>
+                <li>✅ 5 sesiones de capacitación</li>
+                <li>✅ Soporte dedicado</li>
+                <li>✅ Personalización de marca</li>
+            </ul>
+            <button class="btn-pricing secondary" onclick="window.location.href='login.html'">Contactar Ventas</button>
+        </div>
+    </div>
+
+    <!-- GARANTÍAS -->
+    <div class="garantia-badge">
+        <div class="garantia-item">
+            <span class="garantia-icon">🔒</span>
+            <span>Datos seguros y encriptados</span>
+        </div>
+        <div class="garantia-item">
+            <span class="garantia-icon">💳</span>
+            <span>Pago único anual</span>
+        </div>
+        <div class="garantia-item">
+            <span class="garantia-icon">📱</span>
+            <span>Funciona en cualquier dispositivo</span>
+        </div>
+        <div class="garantia-item">
+            <span class="garantia-icon">🎓</span>
+            <span>Alineado al Plan 2022 Fase 2</span>
+        </div>
+    </div>
+
+    <!-- ADAPTACIONES PERSONALIZADAS -->
+    <section class="adaptaciones-section">
+        <h2>🔧 ¿Necesitas Adaptaciones Personalizadas?</h2>
+        <p>Entendemos que cada preescolar es único. Ofrecemos adaptaciones según tus necesidades específicas.</p>
+        
+        <div class="adaptaciones-grid">
+            <div class="adaptacion-card">
+                <div class="adaptacion-icon">🎨</div>
+                <h3>Diseño Personalizado</h3>
+                <p>Colores, logo y branding de tu institución. <strong>Desde $2,000 MXN</strong></p>
+            </div>
+            <div class="adaptacion-card">
+                <div class="adaptacion-icon">📦</div>
+                <h3>Módulos Adicionales</h3>
+                <p>Funcionalidades específicas para tu escuela. <strong>Cotizar según complejidad</strong></p>
+            </div>
+            <div class="adaptacion-card">
+                <div class="adaptacion-icon">📊</div>
+                <h3>Reportes Personalizados</h3>
+                <p>Formatos específicos para tu institución. <strong>Desde $1,500 MXN</strong></p>
+            </div>
+            <div class="adaptacion-card">
+                <div class="adaptacion-icon">🔗</div>
+                <h3>Integraciones</h3>
+                <p>Conexión con otros sistemas escolares. <strong>Cotizar según API</strong></p>
+            </div>
+            <div class="adaptacion-card">
+                <div class="adaptacion-icon">👥</div>
+                <h3>Capacitación Extra</h3>
+                <p>Sesiones adicionales para tu personal. <strong>$800 MXN/sesión</strong></p>
+            </div>
+            <div class="adaptacion-card">
+                <div class="adaptacion-icon">💬</div>
+                <h3>Soporte Dedicado</h3>
+                <p>Canal directo de comunicación. <strong>Incluido en Plan Distrito</strong></p>
+            </div>
+        </div>
+        
+        <div style="text-align:center;margin-top:40px;">
+            <p style="color:#E65100;font-weight:600;margin-bottom:20px;">
+                💡 Muchas adaptaciones menores se incluyen sin costo adicional si no representan complejidad técnica significativa.
+            </p>
+            <button class="btn-pricing primary" style="max-width:300px;" onclick="window.location.href='#contacto'">Solicitar Cotización Personalizada</button>
+        </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section class="testimonios-section">
+        <h2>💬 Lo Que Dicen Nuestras Maestras</h2>
+        <div class="testimonios-grid">
+            <div class="testimonio-card">
+                <p class="testimonio-text">"Esta app me ha ahorrado horas de trabajo. Los reportes PDF son profesionales y los padres están encantados."</p>
+                <p class="testimonio-author">María G.</p>
+                <p class="testimonio-role">Docente de 4 años</p>
+            </div>
+            <div class="testimonio-card">
+                <p class="testimonio-text">"El panel directivo me permite ver el progreso de todos los grupos. Es una herramienta invaluable para la gestión escolar."</p>
+                <p class="testimonio-author">Lic. Carmen R.</p>
+                <p class="testimonio-role">Directora de Preescolar</p>
+            </div>
+            <div class="testimonio-card">
+                <p class="testimonio-text">"Me encanta que esté alineada al Plan 2022. Los campos formativos están bien estructurados y las actividades son muy útiles."</p>
+                <p class="testimonio-author">Profra. Laura M.</p>
+                <p class="testimonio-role">Docente de 5 años</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <h2>❓ Preguntas Frecuentes</h2>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                ¿Puedo cambiar de plan después?
+                <span class="faq-toggle">+</span>
+            </div>
+            <p class="faq-answer">¡Sí! Puedes actualizar o disminuir tu plan en cualquier momento. El cambio se refleja inmediatamente y se ajusta el precio proporcionalmente.</p>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                ¿Los datos de los alumnos están seguros?
+                <span class="faq-toggle">+</span>
+            </div>
+            <p class="faq-answer">Absolutamente. Solo almacenamos nombre de pila e inicial del apellido (sin datos sensibles). Los datos están encriptados y cumplimos con la LFPDPPP.</p>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                ¿Necesito internet para usar la app?
+                <span class="faq-toggle">+</span>
+            </div>
+            <p class="faq-answer">La app funciona parcialmente sin internet (PWA). Sin embargo, para sincronizar datos entre dispositivos y respaldos en la nube, se requiere conexión.</p>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                ¿Qué incluye la capacitación?
+                <span class="faq-toggle">+</span>
+            </div>
+            <p class="faq-answer">Las sesiones de capacitación incluyen: configuración inicial, uso de todos los módulos, generación de reportes y resolución de dudas. Se pueden hacer virtuales o presenciales (área metropolitana).</p>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                ¿Puedo solicitar una adaptación personalizada?
+                <span class="faq-toggle">+</span>
+            </div>
+            <p class="faq-answer">¡Sí! Muchas adaptaciones menores se incluyen sin costo si no representan complejidad técnica. Para cambios más grandes, te enviaremos una cotización sin compromiso.</p>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">
+                ¿Hay descuento por pago anticipado?
+                <span class="faq-toggle">+</span>
+            </div>
+            <p class="faq-answer">Los precios mostrados ya son de pago anual. Para planes Escuela y Distrito, ofrecemos 10% de descuento en el segundo año de renovación anticipada.</p>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="contacto-section" id="contacto">
+        <h2>📞 ¿Listo para Comenzar?</h2>
+        <p>Contáctanos para una demostración personalizada o para cotizar adaptaciones específicas para tu institución.</p>
+        
+        <div style="margin:30px 0;">
+            <a href="mailto:hdzlecter@gmail.com" class="btn-contacto">📧 Enviar Email</a>
+            <a href="https://wa.me/52155XXXXXXXX" class="btn-contacto" style="margin-left:15px;">💬 WhatsApp</a>
+        </div>
+        
+        <p style="margin-top:30px;font-size:14px;opacity:0.8;">
+            🎁 <strong>Oferta de Lanzamiento:</strong> Las primeras 10 escuelas obtienen 50% de descuento de por vida.
+        </p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 Aula Preescolar - Todos los derechos reservados</p>
+        <p style="margin-top:10px;font-size:12px;color:#999;">
+            Plan 2022 Fase 2 - Nueva Escuela Mexicana
+        </p>
+        <div style="margin-top:20px;">
+            <a href="index.html" style="color:#FF6B9D;margin:0 10px;text-decoration:none;">🏠 Inicio</a>
+            <a href="login.html" style="color:#FF6B9D;margin:0 10px;text-decoration:none;">🔐 Iniciar Sesión</a>
+            <a href="ventas.html" style="color:#FF6B9D;margin:0 10px;text-decoration:none;">💰 Precios</a>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle FAQ
+        function toggleFaq(element) {
+            element.classList.toggle('active');
+            const toggle = element.querySelector('.faq-toggle');
+            toggle.textContent = element.classList.contains('active') ? '−' : '+';
+        }
+    </script>
+</body>
+</html>
